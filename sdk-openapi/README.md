@@ -46,7 +46,7 @@ Then generate the SDK:
 # WARNING: Update
 SDK_DEFAULT_AGENT="PydioCells/v4.4.6 KotlinSDK/v0.1.1"
 
-java -jar openapi-generator-cli.jar generate -g kotlin -i ./cellsapi-rest.swagger.yml -o /tmp/forSwagger/cells-sdk-kotlin/sdk-openapi --invoker-package com.pydio.kotlin.openapi  --api-package com.pydio.kotlin.openapi.api  --model-package com.pydio.kotlin.openapi.model --http-user-agent ${SDK_DEFAULT_AGENT}
+java -jar openapi-generator-cli.jar generate -g kotlin -i ./cellsapi-rest.swagger.yml -o /tmp/forSwagger/cells-sdk-kotlin/sdk-openapi --invoker-package com.pydio.kotlin.openapi  --api-package com.pydio.kotlin.openapi.api  --model-package com.pydio.kotlin.openapi.model --http-user-agent "${SDK_DEFAULT_AGENT}"
 
 cd $GITPATH/github.com/pydio/cells-sdk-kotlin/sdk-openapi/src/main/kotlin/com/pydio/kotlin/
 rm -rf ./openapi/{model,api}
