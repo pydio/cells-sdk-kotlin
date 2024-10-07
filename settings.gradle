@@ -10,8 +10,8 @@ pluginManagement {
 rootProject.name = 'cells-sdk-kotlin'
 rootProject.buildFileName = 'build.gradle'
 
-def timestamp = new Date().format( 'yyyyMMddHHmm' )
-println('[DEBUG] Starting init phase for ' + rootProject.name + ' at ' + timestamp)
+def timestamp = new Date().format( 'yyyy-MM-dd HH:mm' )
+println('[DEBUG] Launching build for ' + rootProject.name + ' on ' + timestamp)
 
 include ':sdk-openapi'
 include ':sdk-kotlin'
