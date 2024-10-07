@@ -1,2 +1,7 @@
 .idea/
+.gradle/
+.kotlin/
+
 cells-sdk-kotlin.iml
+sdk-kotlin/build/
+sdk-openapi/build/

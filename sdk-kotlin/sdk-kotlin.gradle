@@ -1,0 +1,73 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
+}
+
+def sdkGroupId = rootProject.sdkGroupId
+def sdkArtifactId = 'sdk-kotlin'
+def sdkVersion = '0.1-SNAPSHOT'
+def sdkName = 'Cells Kotlin SDK'
+
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
+
+// Also publish sources and Javadoc
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+// Skip integration tests by default
+test {
+    if (System.properties['test.profile'] != 'integration') {
+        exclude '**/integration/*'
+    }
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            groupId = sdkGroupId
+            artifactId = sdkArtifactId
+            version = sdkVersion
+
+            pom {
+                name = sdkName
+                description = "A collection of Kotlin libraries for seamless communication with the Pydio Cells server stack"
+                url = rootProject.mainUrl
+                rootProject.configurePom(pom)
+            }
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Specification-Title': sdkName,
+                'Specification-Vendor': rootProject.sdkVendor,
+                'Implementation-Title': project.name,
+                'Implementation-Vendor': rootProject.sdkVendor,
+                'Implementation-Version': sdkVersion,
+        )
+    }
+}
+
+
+dependencies {
+
+    api project(':sdk-openapi')
+
+    // Set of carefully chosen third-party libraries, do not update lightly.
+}

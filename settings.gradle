@@ -1,0 +1,22 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+/* Insure the name stays constants, even if the root directory name changes */
+rootProject.name = 'cells-sdk-kotlin'
+rootProject.buildFileName = 'build.gradle'
+
+def timestamp = new Date().format( 'yyyyMMddHHmm' )
+println('[DEBUG] Starting init phase for ' + rootProject.name + ' at ' + timestamp)
+
+include ':sdk-openapi'
+include ':sdk-kotlin'
+
+/* Use custom names for the "client-sandbox.gradle" file of child modules */
+rootProject.children.each {
+    it.buildFileName = it.name + '.gradle'
+}

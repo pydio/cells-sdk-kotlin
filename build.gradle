@@ -1,0 +1,62 @@
+buildscript {
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath libs.gradle
+        classpath libs.kotlin.gradle.plugin
+    }
+}
+
+plugins {
+    // Publish the generated resources as Maven Artifacts.
+    id 'maven-publish'
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        google()
+        mavenCentral()
+    }
+}
+
+// Expose custom properties and methods to all modules in the project.
+ext {
+    sdkGroupId = 'com.pydio.kotlin'
+    githubUrl = 'https://github.com/pydio/cells-sdk-kotlin.git'
+    mainUrl = 'https://pydio.com'
+    sdkVendor = 'Abstrium SAS'
+}
+
+// Define a method at the root level
+def configurePom(pom) {
+    pom.licenses {
+        license {
+            name = 'The Apache License, Version 2.0'
+            url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+            distribution = 'repo'
+        }
+    }
+    pom.scm {
+        connection = 'scm:git:git://github.com/pydio/sdk-sdk-kotlin.git'
+        developerConnection = 'scm:git:ssh://github.com/pydio/sdk-sdk-kotlin.git'
+        url = githubUrl
+    }
+    pom.developers {
+        developer {
+            id = "bsinou"
+            name = "Bruno Sinou"
+            email = "bruno.sinou@posteo.de"
+        }
+
+        developer {
+            id = "cdujeu"
+            name=  "Charles du Jeu"
+            email = "charles@pyd.io"
+        }
+    }
+}
