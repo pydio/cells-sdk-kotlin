@@ -67,7 +67,10 @@ jar {
 
 dependencies {
 
-    api project(':sdk-openapi')
+    implementation project(':sdk-openapi')
 
     // Set of carefully chosen third-party libraries, do not update lightly.
+    implementation libs.gson
+    implementation libs.okhttp
+
 }
