@@ -72,5 +72,5 @@ dependencies {
     // Set of carefully chosen third-party libraries, do not update lightly.
     implementation libs.gson
     implementation libs.okhttp
-
+    testImplementation libs.junit
 }

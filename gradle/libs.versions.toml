@@ -10,7 +10,7 @@ okhttp-version = "4.12.0"
 moshi-version = "1.11.0"
 logging-interceptor-version = "4.12.0"
 
-#junit = "4.13.2"
+junit-version = "4.13.2"
 #kotlinx-coroutines-test-version = "1.8.1"
 
 ## SDK Kotlin
@@ -39,6 +39,6 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson-version" }
 
 # Tests
 #kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-test-version" }
-#junit = { module = "junit:junit", version.ref = "junit" }
+junit = { module = "junit:junit", version.ref = "junit-version" }
 
 [plugins]

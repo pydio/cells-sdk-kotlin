@@ -5,3 +5,5 @@
 cells-sdk-kotlin.iml
 sdk-kotlin/build/
 sdk-openapi/build/
+/out/
+/local.properties
