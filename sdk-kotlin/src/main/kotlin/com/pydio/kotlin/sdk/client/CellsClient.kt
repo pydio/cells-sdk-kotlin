@@ -47,6 +47,7 @@ import com.pydio.kotlin.sdk.transport.StateID
 import com.pydio.kotlin.sdk.utils.FileNodeUtils.toTreeNodePath
 import com.pydio.kotlin.sdk.utils.IoHelpers
 import com.pydio.kotlin.sdk.utils.Log
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.xml.sax.SAXException
 import java.io.File
 import java.io.FileOutputStream
@@ -55,15 +56,15 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
-import java.net.URL
 import java.util.Properties
 import javax.xml.parsers.ParserConfigurationException
+
 
 class CellsClient(transport: Transport, private val s3Client: S3Client) : Client, SdkNames {
 
     private val logTag = "CellsClient"
 
-    private val transport: CellsTransport
+    private val transport: CellsTransport = transport as CellsTransport
     private val gson = Gson()
 
     private fun userServiceApi(): UserServiceApi {
@@ -96,10 +97,6 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
         return ShareServiceApi(u, c)
     }
 
-    init {
-        this.transport = transport as CellsTransport
-    }
-
     @Throws(SDKException::class)
     override fun stillAuthenticated(): Boolean {
         return try {
@@ -107,8 +104,10 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
             true
         } catch (e: ClientException) {
             Log.e(
-                logTag, "SDK error #" + e.statusCode
-                        + " while checking auth state for " + StateID.fromId(transport.id)
+                logTag,
+                "SDK error #" + e.statusCode + " while checking auth state for " + StateID.fromId(
+                    transport.id
+                )
             )
             false
         } catch (e: SDKException) {
@@ -175,16 +174,12 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
 
     @Throws(SDKException::class)
     override fun ls(
-        slug: String,
-        path: String,
-        options: PageOptions?,
-        handler: (TreeNode) -> Unit
+        slug: String, path: String, options: PageOptions?, handler: (TreeNode) -> Unit
     ): PageOptions {
         val request = RestGetBulkMetaRequest(
             nodePaths = listOf(
                 toTreeNodePath(
-                    slug,
-                    if ("/" == path) "/*" else "$path/*"
+                    slug, if ("/" == path) "/*" else "$path/*"
                 )
             ),
             allMetaProviders = true,
@@ -206,11 +201,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
             } ?: run {
                 val size = response.nodes?.size ?: 0
                 PageOptions(
-                    limit = size,
-                    offset = 0,
-                    total = size,
-                    currentPage = 1,
-                    totalPages = 1
+                    limit = size, offset = 0, total = size, currentPage = 1, totalPages = 1
                 )
             }
 
@@ -231,13 +222,11 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
     @Throws(SDKException::class)
     override fun mkdir(ws: String, parent: String, name: String) {
         val node = TreeNode(
-            path = "$ws$parent/$name".replace("//", "/"),
-            type = TreeNodeType.COLLECTION
+            path = "$ws$parent/$name".replace("//", "/"), type = TreeNodeType.COLLECTION
         )
 
         val request = RestCreateNodesRequest(
-            recursive = false,
-            nodes = listOf(node)
+            recursive = false, nodes = listOf(node)
         )
 
         try {
@@ -284,11 +273,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
 
     @Throws(SDKException::class)
     override fun getThumbnail(
-        stateID: StateID,
-        uuid: String,
-        props: Properties,
-        parentFolder: File,
-        dim: Int
+        stateID: StateID, uuid: String, props: Properties, parentFolder: File, dim: Int
     ): String? {
 
         val filename = getThumbFilename(uuid, props, dim)
@@ -324,10 +309,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
      */
     @Throws(SDKException::class)
     override fun download(
-        ws: String,
-        file: String,
-        target: OutputStream,
-        onProgress: ((Long) -> String?)?
+        ws: String, file: String, target: OutputStream, onProgress: ((Long) -> String?)?
     ): Long {
         var input: InputStream? = null
         return try {
@@ -336,9 +318,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
                 transport.server.newURL(preSignedURL.path).withQuery(preSignedURL.query)
             } catch (e: MalformedURLException) { // This should never happen with a pre-signed.
                 throw SDKException(
-                    ErrorCodes.internal_error,
-                    "Invalid pre-signed path: " + preSignedURL.path,
-                    e
+                    ErrorCodes.internal_error, "Invalid pre-signed path: " + preSignedURL.path, e
                 )
             }
             val con = transport.withUserAgent(serverUrl.openConnection())
@@ -378,22 +358,28 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
         // TODO centralize this
         val objType = object : TypeToken<Map<String, Any>>() {}.type
         val thumbData: Map<String, *> = gson.fromJson(imgThumbsStr, objType)
-        if (thumbData.containsKey(SdkNames.META_KEY_THUMB_PROCESSING)
-            && !(thumbData[SdkNames.META_KEY_THUMB_PROCESSING] as Boolean)
-            && thumbData.containsKey(SdkNames.META_KEY_THUMBS)
+        if (thumbData.containsKey(SdkNames.META_KEY_THUMB_PROCESSING) && !(thumbData[SdkNames.META_KEY_THUMB_PROCESSING] as Boolean) && thumbData.containsKey(
+                SdkNames.META_KEY_THUMBS
+            )
         ) {
-            val thumbs = (thumbData[SdkNames.META_KEY_THUMBS] as? ArrayList<Map<String, Any>>)
-                ?: return null
-            for (currThumb in thumbs) {
-                val size = (currThumb[SdkNames.META_KEY_THUMB_SIZE] as? Double)?.toInt() ?: 0
-                val format = currThumb[SdkNames.META_KEY_THUMB_FORMAT] as? String ?: "jpg"
-                val currName = "$uid-$size.$format"
-                if (thumbName == null) {
-                    thumbName = currName
-                }
-                if (size > 0 && size >= dim) {
-                    thumbName = currName
-                    break
+            val rawData = thumbData[SdkNames.META_KEY_THUMBS]
+            val thumbs = if (rawData is List<*>) {
+                rawData.filterIsInstance<Map<String, Any>>() as? ArrayList<Map<String, Any>>
+            } else {
+                null
+            }
+            thumbs?.let {
+                for (currThumb in it) {
+                    val size = (currThumb[SdkNames.META_KEY_THUMB_SIZE] as? Double)?.toInt() ?: 0
+                    val format = currThumb[SdkNames.META_KEY_THUMB_FORMAT] as? String ?: "jpg"
+                    val currName = "$uid-$size.$format"
+                    if (thumbName == null) {
+                        thumbName = currName
+                    }
+                    if (size > 0 && size >= dim) {
+                        thumbName = currName
+                        break
+                    }
                 }
             }
         }
@@ -403,8 +389,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
     @Throws(SDKException::class)
     override fun getNodeMeta(ws: String, file: String): TreeNode? {
         val request = RestGetBulkMetaRequest(
-            allMetaProviders = true,
-            nodePaths = listOf(toTreeNodePath(ws, file))
+            allMetaProviders = true, nodePaths = listOf(toTreeNodePath(ws, file))
         )
         val response: RestBulkMetaResponse = try {
             treeServiceApi().bulkStatNodes(request)
@@ -422,12 +407,10 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
     @Throws(SDKException::class)
     override fun search(ws: String, dir: String, searchedText: String, h: (TreeNode) -> Unit) {
         val query = TreeQuery(
-            fileName = searchedText,
-            pathPrefix = listOf(ws + dir)
+            fileName = searchedText, pathPrefix = listOf(ws + dir)
         )
         val request = TreeSearchRequest(
-            propertySize = 50,
-            query = query
+            propertySize = 50, query = query
         )
         val results: RestSearchResults = try {
             searchServiceApi().nodes(request)
@@ -585,8 +568,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
 //
     @Throws(SDKException::class)
     override fun copy(
-        sources: List<StateID>,
-        targetParent: StateID
+        sources: List<StateID>, targetParent: StateID
     ) {
         val nodes = mutableListOf<String>()
         sources.forEach { nodes.add(it.path!!) }
@@ -604,8 +586,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
 
     @Throws(SDKException::class)
     override fun move(
-        sources: List<StateID>,
-        targetParent: StateID
+        sources: List<StateID>, targetParent: StateID
     ) {
         val nodes = mutableListOf<String>()
         for (source in sources) {
@@ -712,16 +693,19 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
                 // A node can appear in various workspaces (typically when referenced in a cell)
                 // Yet the server sends back only one node with the specific "appears in" property,
                 // We then have to return a node for each bookmark to the local cache
-                for (twrp in sources) {
-                    var path = twrp.path
+                for (workspace in sources) {
+                    var path = workspace.path
                     if (path.isNullOrEmpty()) {
-                        Log.i(logTag, "Got an empty path for: " + node.path)
+                        Log.w(
+                            logTag,
+                            "Got an empty path in 'appearsIn' list of node at ${node.path}"
+                        )
                         path = "/"
                     } else if (!path.startsWith("/")) {
                         path = "/$path"
                     }
 // FIXME this has been broken when moving to kotlin
-//                        fileNode.setProperty(SdkNames.NODE_PROPERTY_WORKSPACE_SLUG, twrp.wsSlug)
+//                        fileNode.setProperty(SdkNames.NODE_PROPERTY_WORKSPACE_SLUG, workspace.wsSlug)
 //                        fileNode.setProperty(SdkNames.NODE_PROPERTY_PATH, path)
 //                        fileNode.setProperty(
 //                            SdkNames.NODE_PROPERTY_FILENAME,
@@ -750,10 +734,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
     private fun doBookmark(uuid: String?) {
 
         val userMeta = IdmUserMeta(
-            nodeUuid = uuid,
-            namespace = "bookmark",
-            jsonValue = "true",
-            policies = listOf(
+            nodeUuid = uuid, namespace = "bookmark", jsonValue = "true", policies = listOf(
                 ServiceResourcePolicy(action = ServiceResourcePolicyAction.READ),
                 ServiceResourcePolicy(action = ServiceResourcePolicyAction.WRITE),
                 ServiceResourcePolicy(action = ServiceResourcePolicyAction.OWNER),
@@ -761,8 +742,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
         )
 
         val request = IdmUpdateUserMetaRequest(
-            operation = UpdateUserMetaRequestUserMetaOp.PUT,
-            metaDatas = listOf(userMeta)
+            operation = UpdateUserMetaRequestUserMetaOp.PUT, metaDatas = listOf(userMeta)
         )
         try {
             userMetaServiceApi().updateUserMeta(request)
@@ -783,16 +763,13 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
             getNodeUuid(path)?.let { listOf(it) }
 
             // Retrieve bookmark user meta with node UUID
-            val searchRequest = IdmSearchUserMetaRequest(
-                namespace = "bookmark",
-                nodeUuids = getNodeUuid(path)?.let { listOf(it) }
-            )
+            val searchRequest = IdmSearchUserMetaRequest(namespace = "bookmark",
+                nodeUuids = getNodeUuid(path)?.let { listOf(it) })
 
             // Delete corresponding user meta
             val (userMetas: List<IdmUserMeta>?) = api.searchUserMeta(searchRequest)
             val request = IdmUpdateUserMetaRequest(
-                operation = UpdateUserMetaRequestUserMetaOp.DELETE,
-                metaDatas = userMetas
+                operation = UpdateUserMetaRequestUserMetaOp.DELETE, metaDatas = userMetas
             )
             api.updateUserMeta(request)
         } catch (e: ClientException) {
@@ -918,23 +895,31 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
 
     @Throws(SDKException::class)
     private fun getFullLinkAddress(linkUrl: String?, defaultPrefix: String): String {
-        return try {
+        // TODO make this robuster after finding how it is used.
+        val httpUrl = linkUrl?.toHttpUrlOrNull() ?: (defaultPrefix + linkUrl).toHttpUrlOrNull()
+        return httpUrl.toString()
 
-            // FIXME we should not use java.net package
-            val url = URL(linkUrl)
-            // Passed URL is valid we directly use this
-            url.toString()
-        } catch (e: MalformedURLException) {
-            if (!linkUrl!!.startsWith("/")) {
-                // Log.e(logTag, "Could not parse link URL: [" + linkUrl + "]");
-                throw SDKException(
-                    ErrorCodes.unexpected_response,
-                    "Public link [$linkUrl] is not valid",
-                    e
-                )
-            }
-            defaultPrefix + linkUrl
-        }
+
+        //    return try {
+//
+        //        val httpUrl = linkUrl?.toHttpUrlOrNull() ?: (            defaultPrefix + linkUrl).toHttpUrlOrNull()
+        //        return
+//
+        //         HttpUrl.Companion.Builder().build()
+//
+        //        // FIX ME we should not use java.net package
+        //        val url = URL(linkUrl)
+        //        // Passed URL is valid we directly use this
+        //        url.toString()
+        //    } catch (e: MalformedURLException) {
+        //        if (!linkUrl!!.startsWith("/")) {
+        //            // Log.e(logTag, "Could not parse link URL: [" + linkUrl + "]");
+        //            throw SDKException(
+        //                ErrorCodes.unexpected_response, "Public link [$linkUrl] is not valid", e
+        //            )
+        //        }
+        //        defaultPrefix + linkUrl
+        //    }
     }
 
     @Throws(SDKException::class)
