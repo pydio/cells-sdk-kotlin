@@ -13,7 +13,7 @@ import com.pydio.kotlin.sdk.transport.ClientData.Companion.getInstance
 import com.pydio.kotlin.sdk.transport.ClientData.Companion.updateInstance
 import com.pydio.kotlin.sdk.transport.auth.CredentialService
 import com.pydio.kotlin.sdk.transport.auth.credentials.JWTCredentials
-import com.pydio.kotlin.sdk.utils.KotlinCustomEncoder
+import com.pydio.kotlin.sdk.utils.SimpleEncoder
 import com.pydio.kotlin.sdk.utils.Log
 
 /**
@@ -145,7 +145,7 @@ open class ServerFactory(
     }
 
     override fun getEncoder(): CustomEncoder {
-        return KotlinCustomEncoder()
+        return SimpleEncoder()
     }
 
     fun getAnonymousTransport(stateID: StateID): Transport? {

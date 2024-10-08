@@ -1,6 +1,6 @@
 package com.pydio.kotlin.sdk.utils
 
-import java.io.File
+// import java.io.File
 
 private enum class Levels {
     DEBUG, INFO, WARN, ERROR
@@ -15,32 +15,32 @@ object Log {
         logger = l
     }
 
-    private const val ANSI_RESET = "\u001B[0m"
-    private const val FONT_BLACK = "\u001B[30m"
-    private const val FONT_WHITE = "\u001B[47m"
-    private const val BG_DANGER = "\u001B[41m"
-    private const val BG_WARNING = "\u001B[43m"
-    private const val BG_OK = "\u001B[47m"
+//    private const val ANSI_RESET = "\u001B[0m"
+//    private const val FONT_BLACK = "\u001B[30m"
+//    private const val FONT_WHITE = "\u001B[47m"
+//    private const val BG_DANGER = "\u001B[41m"
+//    private const val BG_WARNING = "\u001B[43m"
+//    private const val BG_OK = "\u001B[47m"
 
     private fun getStatusMsg(level: Levels): String {
-
-        var msg = when (level) {
-            Levels.DEBUG -> "DEBUG"
-            Levels.INFO -> "INFO"
-            Levels.WARN -> "WARN"
-            Levels.ERROR -> "ERROR"
-        }
-        if (unixLike()) {
-            val (color, bgColor) = when (level) {
-                Levels.DEBUG -> FONT_BLACK to BG_OK
-                Levels.INFO -> FONT_BLACK to BG_OK
-                Levels.WARN -> FONT_BLACK to BG_WARNING
-                Levels.ERROR -> FONT_WHITE to BG_DANGER
-            }
-            msg = "$bgColor $color $msg $ANSI_RESET $ANSI_RESET"
-
-        }
-        return msg
+        return level.toString()
+//        var msg = when (level) {
+//            Levels.DEBUG -> "DEBUG"
+//            Levels.INFO -> "INFO"
+//            Levels.WARN -> "WARN"
+//            Levels.ERROR -> "ERROR"
+//        }
+//        if (unixLike()) {
+//            val (color, bgColor) = when (level) {
+//                Levels.DEBUG -> FONT_BLACK to BG_OK
+//                Levels.INFO -> FONT_BLACK to BG_OK
+//                Levels.WARN -> FONT_BLACK to BG_WARNING
+//                Levels.ERROR -> FONT_WHITE to BG_DANGER
+//            }
+//            msg = "$bgColor $color $msg $ANSI_RESET $ANSI_RESET"
+//
+//        }
+//        return msg
     }
 
     fun e(tag: String, msg: String) {
@@ -93,9 +93,9 @@ object Log {
         }
     }
 
-    private fun unixLike(): Boolean {
-        return File.separator == "/"
-    }
+//     private fun unixLike(): Boolean {
+//         return File.separator == "/"
+//     }
 
     interface Logger {
         fun e(tag: String, text: String)

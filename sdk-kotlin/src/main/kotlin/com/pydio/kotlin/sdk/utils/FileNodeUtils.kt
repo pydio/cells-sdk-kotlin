@@ -3,7 +3,8 @@ package com.pydio.kotlin.sdk.utils
 import com.pydio.kotlin.sdk.api.ErrorCodes
 import com.pydio.kotlin.sdk.api.SDKException
 import com.pydio.kotlin.sdk.transport.StateID
-import com.pydio.kotlin.sdk.transport.StateID.Companion.utf8Encode
+
+// import com.pydio.kotlin.sdk.transport.StateID.Companion.utf8Encode
 
 /**
  * Simply converts a Cells API TreeNode to our local FileNode object.
@@ -208,21 +209,21 @@ object FileNodeUtils {
         return ws + path
     }
 
-    fun toEncodedTreeNodePath(ws: String, path: String): String {
-        // Log.d(logTag, "Sanitizing: [" + ws + path + "]");
-        val index = path.indexOf("/")
-        return if (index == -1) {
-            "/"
-        } else {
-            val parts =
-                path.substring(index + 1).split("/".toRegex()).dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
-            val pathBuilder = StringBuilder()
-            for (part in parts) {
-                pathBuilder.append("/").append(utf8Encode(part))
-            }
-            Log.d(logTag, "   now: [$ws$pathBuilder]")
-            ws + pathBuilder
-        }
-    }
+//    fun toEncodedTreeNodePath(ws: String, path: String): String {
+//        // Log.d(logTag, "Sanitizing: [" + ws + path + "]");
+//        val index = path.indexOf("/")
+//        return if (index == -1) {
+//            "/"
+//        } else {
+//            val parts =
+//                path.substring(index + 1).split("/".toRegex()).dropLastWhile { it.isEmpty() }
+//                    .toTypedArray()
+//            val pathBuilder = StringBuilder()
+//            for (part in parts) {
+//                pathBuilder.append("/").append(utf8Encode(part))
+//            }
+//            Log.d(logTag, "   now: [$ws$pathBuilder]")
+//            ws + pathBuilder
+//        }
+//    }
 }

@@ -1,12 +1,12 @@
 package com.pydio.kotlin.sdk.transport
 
 import com.pydio.kotlin.sdk.api.CustomEncoder
-import com.pydio.kotlin.sdk.utils.KotlinCustomEncoder
+import com.pydio.kotlin.sdk.utils.SimpleEncoder
 import org.junit.Assert
 import org.junit.Test
 
 /**
- * Basic tests to insure encoding/decoding of states work as expected.
+ * Basic tests to insure that encoding/decoding of state IDs work as expected.
  */
 class StateIDTest {
     @Test
@@ -144,7 +144,7 @@ class StateIDTest {
 
     @Test
     fun testIDWithIncomplete() {
-        val encoder: CustomEncoder = KotlinCustomEncoder()
+        val encoder: CustomEncoder = SimpleEncoder()
 
         val url = "http://example.com:6767"
         var stateID = StateID.fromId(encoder.utf8Encode(url))
