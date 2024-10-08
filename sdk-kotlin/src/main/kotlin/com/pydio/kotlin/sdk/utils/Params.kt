@@ -4,11 +4,8 @@ package com.pydio.kotlin.sdk.utils
  * Class Params implements a wrapper around a simple HashMap to ease implementation of various HTTP requests
  */
 class Params private constructor() {
-    private val params: MutableMap<String, String>
 
-    init {
-        params = HashMap()
-    }
+    private val params: MutableMap<String, String> = HashMap()
 
     operator fun set(key: String, value: String): Params {
         params[key] = value

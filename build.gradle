@@ -32,7 +32,8 @@ ext {
     sdkVendor = 'Abstrium SAS'
 }
 
-// Define a method at the root level
+
+// Factorize common parts of the POM
 def configurePom(pom) {
     pom.licenses {
         license {
@@ -55,7 +56,7 @@ def configurePom(pom) {
 
         developer {
             id = "cdujeu"
-            name=  "Charles du Jeu"
+            name = "Charles du Jeu"
             email = "charles@pyd.io"
         }
     }

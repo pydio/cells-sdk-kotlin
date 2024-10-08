@@ -2,7 +2,6 @@ package com.pydio.kotlin.sdk.transport
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.google.gson.annotations.Expose
 import com.pydio.kotlin.sdk.api.ErrorCodes
 import com.pydio.kotlin.sdk.api.SDKException
 import com.pydio.kotlin.sdk.api.ServerURL

@@ -1,7 +1,6 @@
 [versions]
-
 # Plugins
-android-gradle-plugin = "8.6.1"
+#android-gradle-plugin = "8.6.1"
 gradle = "8.6.1"
 kotlin = "2.0.0"
 
@@ -16,13 +15,12 @@ junit-version = "4.13.2"
 ## SDK Kotlin
 gson-version = "2.11.0"
 
-
 [libraries]
 ## Base libraries
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+#kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 
@@ -35,7 +33,6 @@ moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "mosh
 
 ## SDK Kotlin
 gson = { module = "com.google.code.gson:gson", version.ref = "gson-version" }
-
 
 # Tests
 #kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-test-version" }
