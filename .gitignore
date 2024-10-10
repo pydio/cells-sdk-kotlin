@@ -7,3 +7,4 @@ sdk-kotlin/build/
 sdk-openapi/build/
 /out/
 /local.properties
+/sdk-kotlin/src/test/resources/targets/

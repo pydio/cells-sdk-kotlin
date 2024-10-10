@@ -27,24 +27,24 @@ object TestUtils {
      * Create a new transport that is already logged in and ready to use.
      */
     @Throws(SDKException::class)
-    fun getTransport(factory: ServerFactory, conf: RemoteServerConfig): Transport? {
+    fun getTransport(factory: ServerFactory, conf: RemoteServerConfig): Transport {
         val sURL: ServerURL = try {
-            fromAddress(conf.serverURL, conf.skipVerify)
+            fromAddress(conf.urlString, conf.skipVerify)
         } catch (mue: MalformedURLException) {
             throw SDKException(
                 ErrorCodes.configuration_error,
-                conf.serverURL + " is not a correct URL",
+                conf.urlString + " is not a correct URL",
                 mue
             )
         }
         val server = factory.registerServer(sURL)
         val credentials: Credentials = LegacyPasswordCredentials(conf.username, conf.pwd!!)
         factory.registerAccountCredentials(sURL, credentials)
-        return factory.getTransport(accountID(conf.username, server))
+        return factory.getTransport(accountID(conf.username, server))!!
     }
 
     /* Optimistic helper to get a unique string */
-    private fun randomString(length: Int): String {
+    fun randomString(length: Int): String {
         val sb = StringBuilder()
         val rand = Random()
         for (i in 0 until length) {

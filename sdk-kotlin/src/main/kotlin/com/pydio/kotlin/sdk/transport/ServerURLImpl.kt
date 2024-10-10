@@ -37,13 +37,6 @@ class ServerURLImpl private constructor(
     private var sslContext: SSLContext? = null
     private var sslSocketFactory: SSLSocketFactory? = null
 
-    override fun toJson(): String {
-        // This does not work, we rather do it manually...
-        val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
-        val props: Map<String, Any> = mapOf(urlKey to url.toString(), skipKey to skipVerify)
-        return gson.toJson(props)
-    }
-
     @Throws(IOException::class)
     override fun openConnection(): HttpURLConnection {
         return when (url.protocol) {
@@ -54,7 +47,7 @@ class ServerURLImpl private constructor(
             "https" -> {
                 val conn = url.openConnection() as HttpsURLConnection
                 if (skipVerify) {
-                    setAcceptAllVerifier(conn as HttpsURLConnection?)
+                    setAcceptAllVerifier(conn)
                 }
                 conn
             }
@@ -109,6 +102,13 @@ class ServerURLImpl private constructor(
     // TODO finalize self-signed management.
     override fun skipVerify(): Boolean {
         return skipVerify
+    }
+
+    override fun toJson(): String {
+        // TODO clean : This does not work, we rather do it manually...
+        val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
+        val props: Map<String, Any> = mapOf(urlKey to url.toString(), skipKey to skipVerify)
+        return gson.toJson(props)
     }
 
     /* Manage self-signed on a URL by URL Basis.
@@ -186,16 +186,16 @@ class ServerURLImpl private constructor(
         }
     }
 
-    private fun setAcceptAllVerifier(connection: HttpsURLConnection?) {
+    private fun setAcceptAllVerifier(connection: HttpsURLConnection) {
         try {
             // Create the socket factory.
             // Reusing the same socket factory allows sockets to be reused, supporting persistent connections.
-            if (null == sslSocketFactory) {
+            if (sslSocketFactory == null) {
                 val sc = SSLContext.getInstance("SSL")
                 sc.init(null, SKIP_VERIFY_TRUST_MANAGER, SecureRandom())
                 sslSocketFactory = sc.socketFactory
             }
-            connection!!.sslSocketFactory = sslSocketFactory
+            connection.sslSocketFactory = sslSocketFactory
 
             // Since we may be using a cert with a different name, we need to ignore the hostname as well.
             connection.hostnameVerifier = SKIP_HOSTNAME_VERIFIER

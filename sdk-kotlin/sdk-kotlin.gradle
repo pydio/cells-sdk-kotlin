@@ -29,6 +29,7 @@ test {
         exclude '**/integration/*'
     }
 }
+
 compileKotlin {
     kotlinOptions {
         jvmTarget = "17"
@@ -78,8 +79,15 @@ dependencies {
     // Set of carefully chosen third-party libraries, do not update lightly.
     implementation libs.gson
     implementation libs.okhttp
+    implementation libs.ktor.core
+    implementation libs.ktor.okhttp
+    implementation libs.kotlinx.coroutines.core
 
-    implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0")
+    implementation libs.urlencoder
 
     testImplementation libs.junit
+    testImplementation libs.kotlinx.coroutines.test
+    // To load target server configurations
+    // testImplementation 'org.yaml:snakeyaml:2.3'
+
 }

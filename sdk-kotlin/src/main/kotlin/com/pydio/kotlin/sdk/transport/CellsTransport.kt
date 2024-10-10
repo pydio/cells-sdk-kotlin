@@ -1,6 +1,5 @@
 package com.pydio.kotlin.sdk.transport
 
-import okhttp3.OkHttpClient
 import com.pydio.kotlin.openapi.api.FrontendServiceApi
 import com.pydio.kotlin.openapi.model.RestFrontSessionRequest
 import com.pydio.kotlin.openapi.model.RestFrontSessionResponse
@@ -19,6 +18,7 @@ import com.pydio.kotlin.sdk.transport.auth.Token
 import com.pydio.kotlin.sdk.transport.auth.jwt.OAuthConfig
 import com.pydio.kotlin.sdk.utils.IoHelpers
 import com.pydio.kotlin.sdk.utils.Log
+import okhttp3.OkHttpClient
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -27,9 +27,14 @@ import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URI
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 class CellsTransport(
     credentialService: CredentialService?,
@@ -125,7 +130,6 @@ class CellsTransport(
             return token.value
         }
 
-
     override fun getUserData(binary: String?): InputStream? {
         // FIXME  implement
         return null
@@ -168,7 +172,7 @@ class CellsTransport(
 
     @Throws(SDKException::class)
     fun authenticatedClient(): OkHttpClient.Builder {
-        val builder = OkHttpClient.Builder().addInterceptor(
+        var builder = OkHttpClient.Builder().addInterceptor(
             CellsOAuthInterceptor(getUserAgent()) {
                 val t = this.getToken()
                 val idt = t?.value
@@ -178,24 +182,43 @@ class CellsTransport(
         )
 
         if (server.isSSLUnverified) {
-            // TODO handle skip verify
-            // See eg: https://www.baeldung.com/okhttp-self-signed-cert
+            builder = withSkipVerify(builder)
         }
 
         return builder
     }
 
+    fun withSkipVerify(builder: OkHttpClient.Builder): OkHttpClient.Builder {
+        // Create a trust manager that does not validate certificate chains
+        val trustAllCerts = arrayOf<TrustManager>(
+            object : X509TrustManager {
+                override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+                override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
+                override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
+            }
+        )
+
+        // Install the all-trusting trust manager
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, trustAllCerts, SecureRandom())
+
+        // Create an ssl socket factory with our all-trusting manager
+        val sslSocketFactory = sslContext.socketFactory
+
+        return builder
+            .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
+            .hostnameVerifier { _, _ -> true }
+    }
+
     @Throws(SDKException::class)
     fun anonClient(): OkHttpClient.Builder {
-        val builder = OkHttpClient.Builder().addInterceptor(
+        var builder = OkHttpClient.Builder().addInterceptor(
             CellsAnonInterceptor(getUserAgent())
         )
 
         if (server.isSSLUnverified) {
-            // TODO handle skip verify
-            // See eg: https://www.baeldung.com/okhttp-self-signed-cert
+            builder = withSkipVerify(builder)
         }
-
         return builder
     }
 
@@ -264,7 +287,7 @@ class CellsTransport(
             authInfo = authInfo,
             clientTime = System.currentTimeMillis().toInt(),
         )
-        val api = FrontendServiceApi(getApiURL())
+        val api = FrontendServiceApi(getApiURL(), anonClient().build())
         val response: RestFrontSessionResponse
         return try {
             response = api.frontSession(request)
@@ -409,7 +432,7 @@ class CellsTransport(
                 "application/x-www-form-urlencoded; charset=utf-8"
             )
 
-            authHeader?.let{
+            authHeader?.let {
                 if (it.isNotEmpty()) {
                     con.setRequestProperty("Authorization", authHeader)
                 }

@@ -15,6 +15,13 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 
 class CellsServer(override val serverURL: ServerURL) : Server {
+    companion object {
+        const val API_PREFIX = "/a"
+        const val BOOTCONF_PATH = "$API_PREFIX/frontend/bootconf"
+    }
+
+    val logTag = "CellsServer"
+
     override var oAuthConfig: OAuthConfig? = null
         private set
     private var title: String? = null
@@ -82,9 +89,6 @@ class CellsServer(override val serverURL: ServerURL) : Server {
 
             version = map["ajxpVersion"] as? String ?: version
 
-            // FIXME this is broken. Find where it is used and fix if necessary.
-            hasLicenceFeatures = map.containsKey("license_features")
-
             map["other"]?.let { other ->
                 (other as? Map<*, *>)?.get("vanity")?.let { vanity ->
                     (vanity as? Map<*, *>)?.get("palette")?.let { palette ->
@@ -150,9 +154,4 @@ class CellsServer(override val serverURL: ServerURL) : Server {
         return url().hashCode()
     }
 
-    companion object {
-        const val logTag = "CellsServer"
-        const val API_PREFIX = "/a"
-        const val BOOTCONF_PATH = "$API_PREFIX/frontend/bootconf"
-    }
 }
