@@ -20,7 +20,7 @@ class StateIDTest {
 
         val stateID2 = StateID("doe@example.com", "https://example.com")
         val stateID3 = StateID("joe@example.com", "https://example.com")
-        Assert.assertTrue(stateID.id.equals(stateID2.id))
+        Assert.assertTrue(stateID.id == stateID2.id)
         Assert.assertNotEquals(stateID, stateID3)
 
         Assert.assertEquals(stateID.username, decodedStateID!!.username)

@@ -88,8 +88,7 @@ class ServerConnection private constructor(
         } else {
             "${url.scheme}://${url.host}${url.encodedPath}"
         }
-
-
+    
     @Throws(URLParserException::class)
     fun withPath(path: String): ServerConnection {
         var newUrl = url.newBuilder().encodedPath(path).build() // this does a clone under the hood
