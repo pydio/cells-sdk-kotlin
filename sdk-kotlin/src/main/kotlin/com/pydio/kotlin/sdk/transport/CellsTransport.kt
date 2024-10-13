@@ -298,10 +298,11 @@ class CellsTransport(
             response.expireTime?.let { t.setExpiry(it.toLong()) }
             t
         } catch (e: Exception) { // TODO was ApiException
-            throw SDKException(
-                ErrorCodes.no_token_available,
-                IOException("login or password incorrect")
-            )
+            throw IllegalStateException("cannot retrieve token with legacy credentials", e)
+//            throw SDKException(
+//                ErrorCodes.no_token_available,
+//                IOException("login or password incorrect")
+//            )
         }
     }
 

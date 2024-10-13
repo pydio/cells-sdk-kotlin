@@ -33,11 +33,13 @@ import com.pydio.kotlin.openapi.model.TreeSearchRequest
 import com.pydio.kotlin.openapi.model.UpdateUserMetaRequestUserMetaOp
 import com.pydio.kotlin.sdk.api.Client
 import com.pydio.kotlin.sdk.api.ErrorCodes
+import com.pydio.kotlin.sdk.api.ProgressListener
 import com.pydio.kotlin.sdk.api.Registry
 import com.pydio.kotlin.sdk.api.S3Client
 import com.pydio.kotlin.sdk.api.S3Names
 import com.pydio.kotlin.sdk.api.SDKException
 import com.pydio.kotlin.sdk.api.SdkNames
+import com.pydio.kotlin.sdk.api.ServerURL
 import com.pydio.kotlin.sdk.api.Transport
 import com.pydio.kotlin.sdk.api.ui.PageOptions
 import com.pydio.kotlin.sdk.api.ui.WorkspaceNode
@@ -309,7 +311,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
      */
     @Throws(SDKException::class)
     override fun download(
-        ws: String, file: String, target: OutputStream, onProgress: ((Long) -> String?)?
+        ws: String, file: String, target: OutputStream, progressListener: ProgressListener?
     ): Long {
         var input: InputStream? = null
         return try {
@@ -324,11 +326,13 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
             val con = transport.withUserAgent(serverUrl.openConnection())
             con.connect()
             input = con.inputStream
-            onProgress?.let {
+
+            progressListener?.let {
                 IoHelpers.pipeReadWithIncrementalProgress(input, target, it)
             } ?: run {
                 IoHelpers.pipeRead(input, target)
             }
+
         } catch (e: IOException) {
             if (e.message!!.contains("ENOSPC")) { // no space left on device
                 throw SDKException.noSpaceLeft(e)
@@ -462,52 +466,54 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
 //        }
 //    }
 //
-//    @Throws(SDKException::class)
-//    override fun upload(
-//        source: InputStream,
-//        length: Long,
-//        mime: String,
-//        ws: String,
-//        path: String,
-//        name: String,
-//        autoRename: Boolean,
-//        progressListener: ProgressListener
-//    ) {
-//        val preSignedURL = s3Client.getUploadPreSignedURL(ws, path, name)
-//        val serverUrl: ServerURL
-//        serverUrl = try {
-//            transport.server.newURL(preSignedURL.path).withQuery(preSignedURL.query)
-//        } catch (e: MalformedURLException) { // This should never happen with a pre-signed.
-//            throw SDKException(
-//                ErrorCodes.internal_error,
-//                "Invalid pre-signed path: " + preSignedURL.path,
-//                e
-//            )
-//        }
-//        try {
-//            val con = transport.withUserAgent(serverUrl.openConnection())
-//            con.requestMethod = "PUT"
-//            con.doOutput = true
-//            con.setRequestProperty("Content-Type", "application/octet-stream")
-//            con.setFixedLengthStreamingMode(length)
-//            con.outputStream.use { out ->
-//                try {
-//                    IoHelpers.pipeReadWithIncrementalProgress(source, out, progressListener)
-//                } catch (se: SDKException) {
-//                    if (SDKException.isCancellation(se)) {
-//                        IoHelpers.closeQuietly(out)
-//                    }
-//                    throw se
-//                }
-//            }
-//            // TODO implement multi part upload
-//            Log.d(logTag, "PUT request done with status " + con.responseCode)
-//        } catch (e: IOException) {
-//            throw SDKException.conWriteFailed("Cannot write to server", e)
-//        }
-//        // return Message.create(Message.SUCCESS, "SUCCESS");
-//    }
-//
+
+    @Throws(SDKException::class)
+    fun upload(
+        source: InputStream,
+        length: Long,
+        mime: String,
+        ws: String,
+        path: String,
+        name: String,
+        autoRename: Boolean,
+        progressListener: ProgressListener
+    ) {
+        val preSignedURL = s3Client.getUploadPreSignedURL(ws, path, name)
+        val serverUrl: ServerURL
+        serverUrl = try {
+            transport.server.newURL(preSignedURL.path).withQuery(preSignedURL.query)
+        } catch (e: MalformedURLException) { // This should never happen with a pre-signed.
+            throw SDKException(
+                ErrorCodes.internal_error,
+                "Invalid pre-signed path: " + preSignedURL.path,
+                e
+            )
+        }
+        try {
+            val con = transport.withUserAgent(serverUrl.openConnection())
+            con.requestMethod = "PUT"
+            con.doOutput = true
+            con.setRequestProperty("Content-Type", "application/octet-stream")
+            con.setFixedLengthStreamingMode(length)
+            con.outputStream.use { out ->
+                try {
+                    IoHelpers.pipeReadWithIncrementalProgress(source, out, progressListener)
+                } catch (se: SDKException) {
+                    if (SDKException.isCancellation(se)) {
+                        IoHelpers.closeQuietly(out)
+                    }
+                    throw se
+                }
+            }
+            // TODO implement multi part upload
+            Log.d(logTag, "PUT request done with status " + con.responseCode)
+        } catch (e: IOException) {
+            throw SDKException.conWriteFailed("Cannot write to server", e)
+        }
+        // return Message.create(Message.SUCCESS, "SUCCESS");
+    }
+
+    //
 //    @Throws(SDKException::class)
 //    override fun upload(
 //        source: File,

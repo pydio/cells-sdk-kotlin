@@ -1,5 +1,6 @@
 package com.pydio.kotlin.sdk.utils
 
+import com.pydio.kotlin.sdk.api.ProgressListener
 import com.pydio.kotlin.sdk.api.SDKException
 import java.io.BufferedReader
 import java.io.ByteArrayInputStream
@@ -97,7 +98,7 @@ object IoHelpers {
     fun pipeReadWithIncrementalProgress(
         input: InputStream,
         out: OutputStream,
-        progress: ((Long) -> String?)?
+        progress: ProgressListener?
     ): Long {
         if (progress == null) {
             return pipeRead(input, out)
@@ -109,7 +110,7 @@ object IoHelpers {
             totalRead += read.toLong()
             out.write(buffer, 0, read)
             // val cancelMsg =
-            progress(read.toLong())?.let {
+            progress.onProgress(read.toLong())?.let {
                 if (it.isNotEmpty())
                     throw SDKException.cancel(it)
             }
@@ -122,7 +123,7 @@ object IoHelpers {
     fun pipeReadWithProgress(
         input: InputStream,
         out: OutputStream,
-        progress: ((Long) -> String?)?
+        progress: ProgressListener
     ): Long {
         if (progress == null) {
             return pipeRead(input, out)
@@ -133,7 +134,7 @@ object IoHelpers {
         while (read > -1) {
             totalRead += read.toLong()
             out.write(buffer, 0, read)
-            progress(read.toLong())?.let {
+            progress.onProgress(read.toLong())?.let {
                 if (it.isNotEmpty()) throw SDKException.cancel(it)
             }
             read = input.read(buffer)

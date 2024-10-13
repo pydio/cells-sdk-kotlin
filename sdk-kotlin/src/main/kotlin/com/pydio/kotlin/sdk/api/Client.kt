@@ -57,7 +57,7 @@ interface Client {
         ws: String,
         file: String,
         target: OutputStream,
-        onProgress: ((Long) -> String?)?
+        onProgress: ProgressListener?
     ): Long
 
 
