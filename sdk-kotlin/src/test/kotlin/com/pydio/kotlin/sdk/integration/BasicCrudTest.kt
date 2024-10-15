@@ -1,11 +1,8 @@
 package com.pydio.kotlin.sdk.integration
 
-import aws.sdk.kotlin.services.s3.model.PutObjectRequest
-import aws.sdk.kotlin.services.s3.model.PutObjectRequest.Companion.invoke
-import aws.sdk.kotlin.services.s3.presigners.presignPutObject
 import com.pydio.kotlin.sdk.api.ProgressListener
-import com.pydio.kotlin.sdk.api.S3Names
 import com.pydio.kotlin.sdk.api.Transport
+import com.pydio.kotlin.sdk.transport.CellsMinioClient
 import com.pydio.kotlin.sdk.transport.CellsS3Client
 import com.pydio.kotlin.sdk.transport.CellsTransport
 import com.pydio.kotlin.sdk.transport.StateID
@@ -16,22 +13,18 @@ import com.pydio.kotlin.sdk.utils.tests.TestClientFactory
 import com.pydio.kotlin.sdk.utils.tests.TestCredentialService
 import com.pydio.kotlin.sdk.utils.tests.TestUtils
 import kotlinx.coroutines.runBlocking
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.slf4j.LoggerFactory
 import java.io.InputStream
 import java.net.HttpURLConnection
-import kotlin.time.Duration.Companion.hours
 
 class BasicCrudTest {
 
+    private var testRunID: String? = null
     private var factory: TestClientFactory? = null
     private val configs: MutableMap<String, RemoteServerConfig> = HashMap()
-
-    private var testRunID: String? = null
     val logger = LoggerFactory.getLogger("com.pydio.kotlin.sdk.integration.BasicCrudTest")
 
     @Before
@@ -75,96 +68,24 @@ class BasicCrudTest {
 
     suspend fun basicCRUD(conf: RemoteServerConfig) {
         val transport: Transport = TestUtils.getTransport(factory!!, conf)
-        val cellsS3Client: CellsS3Client = CellsS3Client(transport as CellsTransport)
-
-        println("... Testing CRUD for ${transport.stateID}")
-
-        val baseDir = "/"
-        val name = "hello-" + testRunID + ".txt"
+        val name = "hello-$testRunID.txt"
         val targetStateID = transport.stateID.withPath("/${conf.defaultWS}/$name")
         var message = "Hello Pydio! - this is a message from test run #$testRunID"
-//        val input = message.byteInputStream()
-//        uploadTest(transport, cellsS3Client, targetStateID, input)
+        println("... Testing CRUD for ${transport.stateID}")
 
-        uploadTest3(cellsS3Client, targetStateID, message)
-
-//        val outputStream = ByteArrayOutputStream()
-//        cellsS3Client.download(
-//            transport.stateID.withPath("/common-files/test.txt"),
-//            outputStream,
-//            DebugPL()
-//        )
-
-//        outputStream.close()  // Ensure you close the stream when done
-//        val outputString = outputStream.toString(StandardCharsets.UTF_8.name())
-//        println(outputString)
-
+        uploadTest(transport as CellsTransport, targetStateID, message)
     }
 
     private suspend fun uploadTest(
         transport: CellsTransport,
-        s3Client: CellsS3Client,
-        stateID: StateID,
-        content: InputStream,
-    ): Long {
-
-        var connection: HttpURLConnection? = null
-        try {
-            val preSignedURL = s3Client.getUploadPreSignedURL(stateID)
-            val serverUrl = transport.server.newURL(preSignedURL.path).withQuery(preSignedURL.query)
-            connection = transport.withUserAgent(serverUrl.openConnection())
-            connection.doOutput = true
-            val output = connection.outputStream
-            return IoHelpers.pipeRead(content, output)
-        } finally {
-            IoHelpers.closeQuietly(connection)
-        }
-    }
-
-    private suspend fun uploadTest2(
-        transport: CellsTransport,
-        s3Client: CellsS3Client,
         stateID: StateID,
         content: String,
     ) {
-
-        val unsignedRequest = PutObjectRequest {
-            bucket = s3Client.defaultBucketName
-            key = stateID.path?.substring(1)
-            contentType = S3Names.S3_CONTENT_TYPE_OCTET_STREAM
-        }
-
-
-        val awsS3Client = s3Client.getAwsS3Client()
-
-        val preSignedRequest = awsS3Client.presignPutObject(unsignedRequest, 24.hours)
-
-        val putRequest = Request
-            .Builder()
-            .url(preSignedRequest.url.toString())
-            .apply {
-                preSignedRequest.headers.forEach { key, values ->
-                    header(key, values.joinToString(", "))
-                }
-            }.put(content.toRequestBody())
-            .build()
-
-        val response = transport.authenticatedClient().build().newCall(putRequest).execute()
-        println("## After Put - Success: ${response.isSuccessful}")
-        println("\t ${response.code} - ${response.message}")
-        assert(response.isSuccessful)
-    }
-
-    private suspend fun uploadTest3(
-        s3Client: CellsS3Client,
-        stateID: StateID,
-        content: String,
-    ) {
-        s3Client.upload2(
-            stateID,
-            content,
-            null,
-            DebugPL()
+        val minioClient = CellsMinioClient(transport)
+        minioClient.upload(
+            stateID = stateID,
+            content = content,
+            progressListener = DebugPL()
         )
     }
 
@@ -175,6 +96,62 @@ class BasicCrudTest {
         }
     }
 
+
+    private suspend fun uploadTest2(
+        transport: CellsTransport,
+        s3Client: CellsS3Client,
+        stateID: StateID,
+        content: InputStream,
+    ): Long {
+
+        var connection: HttpURLConnection? = null
+        try {
+            val preSignedURL = s3Client.getUploadPreSignedURL(stateID)
+            check(preSignedURL != null)
+            val serverUrl = transport.server.newURL(preSignedURL.path).withQuery(preSignedURL.query)
+            connection = transport.withUserAgent(serverUrl.openConnection())
+            connection.doOutput = true
+            val output = connection.outputStream
+            return IoHelpers.pipeRead(content, output)
+        } finally {
+            IoHelpers.closeQuietly(connection)
+        }
+    }
+
+
+//    private suspend fun uploadTest2(
+//        transport: CellsTransport,
+//        s3Client: CellsS3Client,
+//        stateID: StateID,
+//        content: String,
+//    ) {
+//
+//        val unsignedRequest = PutObjectRequest {
+//            bucket = s3Client.defaultBucketName
+//            key = stateID.path?.substring(1)
+//            contentType = S3Names.S3_CONTENT_TYPE_OCTET_STREAM
+//        }
+//
+//
+//        val awsS3Client = s3Client.getAwsS3Client()
+//
+//        val preSignedRequest = awsS3Client.presignPutObject(unsignedRequest, 24.hours)
+//
+//        val putRequest = Request
+//            .Builder()
+//            .url(preSignedRequest.url.toString())
+//            .apply {
+//                preSignedRequest.headers.forEach { key, values ->
+//                    header(key, values.joinToString(", "))
+//                }
+//            }.put(content.toRequestBody())
+//            .build()
+//
+//        val response = transport.authenticatedClient().build().newCall(putRequest).execute()
+//        println("## After Put - Success: ${response.isSuccessful}")
+//        println("\t ${response.code} - ${response.message}")
+//        assert(response.isSuccessful)
+//    }
 
 //    suspend fun putObjectPresigned(
 //        bucketName: String,
