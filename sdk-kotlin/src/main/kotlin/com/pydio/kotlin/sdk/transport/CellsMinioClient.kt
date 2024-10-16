@@ -2,12 +2,16 @@ package com.pydio.kotlin.sdk.transport
 
 import com.pydio.kotlin.sdk.api.ProgressListener
 import com.pydio.kotlin.sdk.api.S3Names
+import com.pydio.kotlin.sdk.utils.IoHelpers
+import io.minio.GetObjectArgs
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
 import java.io.ByteArrayInputStream
+import java.io.InputStream
+import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 
-/* Main entry point to communicate with a S3 store */
+/* Provide basic file transfer capabilities to Cells S3 storage without introducing dependencies to AWS or Android */
 class CellsMinioClient(private val transport: CellsTransport) {
 
     private val logTag = "CellsMinioClient.kt"
@@ -26,7 +30,6 @@ class CellsMinioClient(private val transport: CellsTransport) {
         mime: String = S3Names.S3_CONTENT_TYPE_OCTET_STREAM,
         progressListener: ProgressListener?
     ) {
-        println("#### About to upload with Minio")
         val minioClient = getMinioClient(transport)
         val path = stateID.path?.substring(1) ?: ""
         val args = PutObjectArgs.builder().bucket(DEFAULT_BUCKET_NAME).`object`(path)
@@ -39,19 +42,24 @@ class CellsMinioClient(private val transport: CellsTransport) {
             .build()
         minioClient.putObject(args)
     }
-}
 
-//private class SimpleCredentialsProvider(private val transport: CellsTransport) :
-//    CredentialsProvider {
-//
-//    override suspend fun resolve(attributes: Attributes): Credentials {
-//        if (transport.accessToken == null) {
-//            throw IllegalArgumentException("access token cannot be null")
-//        }
-//        return Credentials(
-//            accessKeyId = transport.accessToken!!,
-//            secretAccessKey = DEFAULT_GATEWAY_SECRET,
-//            sessionToken = transport.accessToken
-//        )
-//    }
-//}
+    suspend fun download(
+        stateID: StateID,
+        outputStream: OutputStream,
+        progressListener: ProgressListener?
+    ) {
+        val minioClient = getMinioClient(transport)
+        val path = stateID.path?.substring(1) ?: ""
+        val args = GetObjectArgs.builder().bucket(DEFAULT_BUCKET_NAME)
+            .`object`(path)
+            .build()
+        val stream: InputStream
+        try {
+            stream = minioClient.getObject(args)
+            IoHelpers.pipeReadWithProgress(stream, outputStream, progressListener)
+        } catch (e: Exception) {
+            println("Could not DL file at $stateID")
+            e.printStackTrace()
+        }
+    }
+}

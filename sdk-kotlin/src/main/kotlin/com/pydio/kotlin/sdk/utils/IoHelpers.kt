@@ -123,7 +123,7 @@ object IoHelpers {
     fun pipeReadWithProgress(
         input: InputStream,
         out: OutputStream,
-        progress: ProgressListener
+        progress: ProgressListener?
     ): Long {
         if (progress == null) {
             return pipeRead(input, out)
