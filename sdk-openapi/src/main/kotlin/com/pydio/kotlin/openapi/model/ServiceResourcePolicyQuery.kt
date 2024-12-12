@@ -15,6 +15,7 @@
 
 package com.pydio.kotlin.openapi.model
 
+import com.pydio.kotlin.openapi.model.ServiceResourcePolicyAction
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -22,19 +23,27 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
+ * @param action 
  * @param any 
  * @param empty 
+ * @param leftIdentifier 
  * @param subjects 
  */
 
 
 data class ServiceResourcePolicyQuery (
 
+    @Json(name = "Action")
+    val action: ServiceResourcePolicyAction? = ServiceResourcePolicyAction.ANY,
+
     @Json(name = "Any")
     val any: kotlin.Boolean? = null,
 
     @Json(name = "Empty")
     val empty: kotlin.Boolean? = null,
+
+    @Json(name = "LeftIdentifier")
+    val leftIdentifier: kotlin.String? = null,
 
     @Json(name = "Subjects")
     val subjects: kotlin.collections.List<kotlin.String>? = null

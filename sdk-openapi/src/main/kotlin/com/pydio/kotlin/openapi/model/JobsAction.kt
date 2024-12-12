@@ -16,7 +16,6 @@
 package com.pydio.kotlin.openapi.model
 
 import com.pydio.kotlin.openapi.model.JobsActionOutputFilter
-import com.pydio.kotlin.openapi.model.JobsChatEventFilter
 import com.pydio.kotlin.openapi.model.JobsContextMetaFilter
 import com.pydio.kotlin.openapi.model.JobsDataSelector
 import com.pydio.kotlin.openapi.model.JobsDataSourceSelector
@@ -35,7 +34,6 @@ import com.squareup.moshi.JsonClass
  * @param breakAfter 
  * @param bypass 
  * @param chainedActions 
- * @param chatEventFilter 
  * @param contextMetaFilter 
  * @param dataFilter 
  * @param dataSelector 
@@ -71,9 +69,6 @@ data class JobsAction (
 
     @Json(name = "ChainedActions")
     val chainedActions: kotlin.collections.List<JobsAction>? = null,
-
-    @Json(name = "ChatEventFilter")
-    val chatEventFilter: JobsChatEventFilter? = null,
 
     @Json(name = "ContextMetaFilter")
     val contextMetaFilter: JobsContextMetaFilter? = null,

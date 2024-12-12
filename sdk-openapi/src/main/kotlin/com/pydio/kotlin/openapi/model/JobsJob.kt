@@ -16,7 +16,6 @@
 package com.pydio.kotlin.openapi.model
 
 import com.pydio.kotlin.openapi.model.JobsAction
-import com.pydio.kotlin.openapi.model.JobsChatEventFilter
 import com.pydio.kotlin.openapi.model.JobsContextMetaFilter
 import com.pydio.kotlin.openapi.model.JobsDataSourceSelector
 import com.pydio.kotlin.openapi.model.JobsIdmSelector
@@ -38,7 +37,6 @@ import com.squareup.moshi.JsonClass
  * @param autoClean 
  * @param autoRestart 
  * @param autoStart 
- * @param chatEventFilter 
  * @param contextMetaFilter 
  * @param createdAt 
  * @param custom 
@@ -80,9 +78,6 @@ data class JobsJob (
 
     @Json(name = "AutoStart")
     val autoStart: kotlin.Boolean? = null,
-
-    @Json(name = "ChatEventFilter")
-    val chatEventFilter: JobsChatEventFilter? = null,
 
     @Json(name = "ContextMetaFilter")
     val contextMetaFilter: JobsContextMetaFilter? = null,

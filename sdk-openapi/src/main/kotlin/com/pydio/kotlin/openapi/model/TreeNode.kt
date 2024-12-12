@@ -30,7 +30,8 @@ import com.squareup.moshi.JsonClass
  * @param etag 
  * @param mtime 
  * @param metaStore 
- * @param mode 
+ * @param mode Permission mode, like 0777. Stored as string using custom ModeString field.
+ * @param modeString 
  * @param path 
  * @param propertySize 
  * @param type 
@@ -55,8 +56,12 @@ data class TreeNode (
     @Json(name = "MetaStore")
     val metaStore: kotlin.collections.Map<kotlin.String, kotlin.String>? = null,
 
+    /* Permission mode, like 0777. Stored as string using custom ModeString field. */
     @Json(name = "Mode")
     val mode: kotlin.Int? = null,
+
+    @Json(name = "ModeString")
+    val modeString: kotlin.String? = null,
 
     @Json(name = "Path")
     val path: kotlin.String? = null,
