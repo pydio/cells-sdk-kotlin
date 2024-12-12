@@ -1,4 +1,4 @@
-package com.pydio.kotlin.openapi.infrastructure
+package org.openapitools.client.infrastructure
 
 /**
  * Provides enumerated HTTP verbs

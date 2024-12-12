@@ -15,6 +15,7 @@
 
 package com.pydio.kotlin.openapi.model
 
+import com.pydio.kotlin.openapi.model.RestMetaUpdate
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -22,26 +23,14 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param contentType 
- * @param dimension 
- * @param processing 
- * @param url 
+ * @param updates 
  */
 
 
-data class RestFilePreview (
+data class RestBatchUpdateMetaList (
 
-    @Json(name = "ContentType")
-    val contentType: kotlin.String? = null,
-
-    @Json(name = "Dimension")
-    val dimension: kotlin.Int? = null,
-
-    @Json(name = "Processing")
-    val processing: kotlin.Boolean? = null,
-
-    @Json(name = "Url")
-    val url: kotlin.String? = null
+    @Json(name = "Updates")
+    val updates: kotlin.collections.List<RestMetaUpdate>? = null
 
 ) {
 

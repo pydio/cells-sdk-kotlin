@@ -1,4 +1,4 @@
-package com.pydio.kotlin.openapi.infrastructure
+package org.openapitools.client.infrastructure
 
 enum class ResponseType {
     Success, Informational, Redirection, ClientError, ServerError

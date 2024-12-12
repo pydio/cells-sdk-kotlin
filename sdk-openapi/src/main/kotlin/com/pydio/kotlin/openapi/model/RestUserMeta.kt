@@ -22,26 +22,26 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param contentType 
- * @param dimension 
- * @param processing 
- * @param url 
+ * @param editable 
+ * @param jsonValue 
+ * @param namespace 
+ * @param nodeUuid 
  */
 
 
-data class RestFilePreview (
+data class RestUserMeta (
 
-    @Json(name = "ContentType")
-    val contentType: kotlin.String? = null,
+    @Json(name = "Editable")
+    val editable: kotlin.Boolean? = null,
 
-    @Json(name = "Dimension")
-    val dimension: kotlin.Int? = null,
+    @Json(name = "JsonValue")
+    val jsonValue: kotlin.String? = null,
 
-    @Json(name = "Processing")
-    val processing: kotlin.Boolean? = null,
+    @Json(name = "Namespace")
+    val namespace: kotlin.String? = null,
 
-    @Json(name = "Url")
-    val url: kotlin.String? = null
+    @Json(name = "NodeUuid")
+    val nodeUuid: kotlin.String? = null
 
 ) {
 

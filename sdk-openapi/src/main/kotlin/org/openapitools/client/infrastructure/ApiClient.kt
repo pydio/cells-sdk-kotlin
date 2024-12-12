@@ -1,4 +1,4 @@
-package com.pydio.kotlin.openapi.infrastructure
+package org.openapitools.client.infrastructure
 
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -31,23 +31,23 @@ import com.squareup.moshi.adapter
 
 val EMPTY_REQUEST: RequestBody = ByteArray(0).toRequestBody()
 
-open class ApiClient(val baseUrl: String, val client: OkHttpClient = defaultClient) {
+open class ApiClient(val baseUrl: String, val client: Call.Factory = defaultClient) {
     companion object {
-        protected const val ContentType = "Content-Type"
-        protected const val Accept = "Accept"
-        protected const val Authorization = "Authorization"
-        protected const val JsonMediaType = "application/json"
-        protected const val FormDataMediaType = "multipart/form-data"
-        protected const val FormUrlEncMediaType = "application/x-www-form-urlencoded"
-        protected const val XmlMediaType = "application/xml"
-        protected const val OctetMediaType = "application/octet-stream"
+        protected const val ContentType: String = "Content-Type"
+        protected const val Accept: String = "Accept"
+        protected const val Authorization: String = "Authorization"
+        protected const val JsonMediaType: String = "application/json"
+        protected const val FormDataMediaType: String = "multipart/form-data"
+        protected const val FormUrlEncMediaType: String = "application/x-www-form-urlencoded"
+        protected const val XmlMediaType: String = "application/xml"
+        protected const val OctetMediaType: String = "application/octet-stream"
 
         val apiKey: MutableMap<String, String> = mutableMapOf()
         val apiKeyPrefix: MutableMap<String, String> = mutableMapOf()
         var username: String? = null
         var password: String? = null
         var accessToken: String? = null
-        const val baseUrlKey = "org.openapitools.client.baseUrl"
+        const val baseUrlKey: String = "org.openapitools.client.baseUrl"
 
         @JvmStatic
         val defaultClient: OkHttpClient by lazy {
@@ -56,6 +56,21 @@ open class ApiClient(val baseUrl: String, val client: OkHttpClient = defaultClie
 
         @JvmStatic
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
+    }
+
+    /**
+     * Guess Content-Type header from the given byteArray (defaults to "application/octet-stream").
+     *
+     * @param byteArray The given file
+     * @return The guessed Content-Type
+     */
+    protected fun guessContentTypeFromByteArray(byteArray: ByteArray): String {
+        val contentType = try {
+            URLConnection.guessContentTypeFromStream(byteArray.inputStream())
+        } catch (io: IOException) {
+            "application/octet-stream"
+        }
+        return contentType
     }
 
     /**
@@ -71,6 +86,7 @@ open class ApiClient(val baseUrl: String, val client: OkHttpClient = defaultClie
 
     protected inline fun <reified T> requestBody(content: T, mediaType: String?): RequestBody =
         when {
+            content is ByteArray -> content.toRequestBody((mediaType ?: guessContentTypeFromByteArray(content)).toMediaTypeOrNull())
             content is File -> content.asRequestBody((mediaType ?: guessContentTypeFromFile(content)).toMediaTypeOrNull())
             mediaType == FormDataMediaType ->
                 MultipartBody.Builder()
@@ -125,8 +141,11 @@ open class ApiClient(val baseUrl: String, val client: OkHttpClient = defaultClie
         val body = response.body
         if(body == null) {
             return null
-        }
-        if (T::class.java == File::class.java) {
+        } else if (T::class.java == Unit::class.java) {
+            // No need to parse the body when we're not interested in the body
+            // Useful when API is returning other Content-Type
+            return null
+        } else if (T::class.java == File::class.java) {
             // return tempFile
             val contentDisposition = response.header("Content-Disposition")
 

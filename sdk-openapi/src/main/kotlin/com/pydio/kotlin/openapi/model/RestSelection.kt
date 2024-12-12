@@ -21,7 +21,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
- * 
+ * Request to create a selection from a list of nodes.
  *
  * @param nodes 
  * @param uuid 

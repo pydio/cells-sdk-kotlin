@@ -22,26 +22,14 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param contentType 
- * @param dimension 
- * @param processing 
- * @param url 
+ * @param propertyValues 
  */
 
 
-data class RestFilePreview (
+data class RestNamespaceValuesResponse (
 
-    @Json(name = "ContentType")
-    val contentType: kotlin.String? = null,
-
-    @Json(name = "Dimension")
-    val dimension: kotlin.Int? = null,
-
-    @Json(name = "Processing")
-    val processing: kotlin.Boolean? = null,
-
-    @Json(name = "Url")
-    val url: kotlin.String? = null
+    @Json(name = "Values")
+    val propertyValues: kotlin.collections.List<kotlin.String>? = null
 
 ) {
 

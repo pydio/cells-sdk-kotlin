@@ -256,6 +256,50 @@ paths:
       tags:
       - NodeService
       x-codegen-request-body-name: Command
+  /node/bookmarks:
+    get:
+      operationId: UserBookmarks
+      parameters:
+      - in: query
+        name: All
+        schema:
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restNodeCollection'
+          description: A successful response.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User is not authenticated
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User has no permission to access this particular resource
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: Resource does not exist in the system
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: An internal error occurred in the backend
+      summary: |-
+        Special API for Bookmarks, will load userMeta and the associated nodes, and return
+        as a node list
+      tags:
+      - NodeService
   /node/create:
     post:
       operationId: Create
@@ -433,7 +477,8 @@ paths:
     patch:
       operationId: UpdatePublicLink
       parameters:
-      - in: path
+      - description: For Updates only
+        in: path
         name: Uuid
         required: true
         schema:
@@ -463,6 +508,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/restShareLink'
+        description: Public link definition
         required: true
       responses:
         "200":
@@ -499,6 +545,241 @@ paths:
       tags:
       - NodeService
       x-codegen-request-body-name: Link
+  /node/meta:
+    post:
+      operationId: SearchMeta
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/idmSearchUserMetaRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restUserMetaList'
+          description: A successful response.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User is not authenticated
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User has no permission to access this particular resource
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: Resource does not exist in the system
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: An internal error occurred in the backend
+      summary: Search a list of meta by node Id or by User id and by namespace
+      tags:
+      - NodeService
+      x-codegen-request-body-name: body
+  /node/meta/batch:
+    patch:
+      operationId: BatchUpdateMeta
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/restBatchUpdateMetaList'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restBatchUpdateMetaList'
+          description: A successful response.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User is not authenticated
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User has no permission to access this particular resource
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: Resource does not exist in the system
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: An internal error occurred in the backend
+      summary: Update/delete user meta in batch. Passed UserMetas must contain a NodeUuid
+      tags:
+      - NodeService
+      x-codegen-request-body-name: body
+  /node/meta/namespace:
+    get:
+      operationId: ListNamespaces
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restUserMetaNamespaceCollection'
+          description: A successful response.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User is not authenticated
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User has no permission to access this particular resource
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: Resource does not exist in the system
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: An internal error occurred in the backend
+      summary: List defined meta namespaces
+      tags:
+      - NodeService
+  /node/meta/namespace/{Namespace}:
+    get:
+      operationId: ListNamespaceValues
+      parameters:
+      - description: List persisted values for this namespace
+        in: path
+        name: Namespace
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: Operation.Operation
+        schema:
+          default: PUT
+          enum:
+          - PUT
+          - DELETE
+          type: string
+      - explode: true
+        in: query
+        name: Operation.Values
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restNamespaceValuesResponse'
+          description: A successful response.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User is not authenticated
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User has no permission to access this particular resource
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: Resource does not exist in the system
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: An internal error occurred in the backend
+      summary: List values for a given namespace
+      tags:
+      - NodeService
+    patch:
+      operationId: UpdateNamespaceValues
+      parameters:
+      - description: List persisted values for this namespace
+        in: path
+        name: Namespace
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/restNamespaceValuesOperation'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restNamespaceValuesResponse'
+          description: A successful response.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User is not authenticated
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User has no permission to access this particular resource
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: Resource does not exist in the system
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: An internal error occurred in the backend
+      summary: Add/delete a values for a given namespace
+      tags:
+      - NodeService
+      x-codegen-request-body-name: Operation
   /node/p/{Path}:
     get:
       operationId: GetByPath
@@ -554,6 +835,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/restSelection'
+        description: Request to create a selection from a list of nodes.
         required: true
       responses:
         "200":
@@ -680,6 +962,56 @@ paths:
       summary: Load a node by its Uuid
       tags:
       - NodeService
+    patch:
+      operationId: PatchNode
+      parameters:
+      - in: path
+        name: Uuid
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/restNodeUpdates'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restNode'
+          description: A successful response.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User is not authenticated
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: User has no permission to access this particular resource
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: Resource does not exist in the system
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/restError'
+          description: An internal error occurred in the backend
+      summary: "UpdateUserMeta is used to update a node specific meta. It is used\
+        \ for reserved meta as well (bookmarks, contentLock)"
+      tags:
+      - NodeService
+      x-codegen-request-body-name: NodeUpdates
   /node/v/{Uuid}:
     get:
       operationId: ListVersions
@@ -729,6 +1061,12 @@ paths:
       - NodeService
 components:
   schemas:
+    MetaUpdateOp:
+      default: PUT
+      enum:
+      - PUT
+      - DELETE
+      type: string
     activityObject:
       example:
         partOf: null
@@ -1147,6 +1485,28 @@ components:
           title: Unique identifier of this role
           type: string
       type: object
+    idmSearchUserMetaRequest:
+      properties:
+        MetaUuids:
+          items:
+            type: string
+          title: Look for meta by their unique identifier
+          type: array
+        Namespace:
+          title: Filter meta by their namespace
+          type: string
+        NodeUuids:
+          items:
+            type: string
+          title: Look for all meta for a list of nodes
+          type: array
+        ResourceQuery:
+          $ref: '#/components/schemas/serviceResourcePolicyQuery'
+        ResourceSubjectOwner:
+          title: Filter meta by owner (in the sense of the policies)
+          type: string
+      title: Request for searching UserMeta by NodeUuid or by Namespace
+      type: object
     idmUser:
       example:
         PoliciesContextEditable: true
@@ -1268,6 +1628,55 @@ components:
           title: User unique identifier
           type: string
       title: User can represent either a User or a Group
+      type: object
+    idmUserMetaNamespace:
+      example:
+        Order: 0
+        PoliciesContextEditable: true
+        Policies:
+        - Action: ANY
+          Resource: Resource
+          JsonConditions: JsonConditions
+          Effect: deny
+          id: id
+          Subject: Subject
+        - Action: ANY
+          Resource: Resource
+          JsonConditions: JsonConditions
+          Effect: deny
+          id: id
+          Subject: Subject
+        JsonDefinition: JsonDefinition
+        Label: Label
+        Indexable: true
+        Namespace: Namespace
+      properties:
+        Indexable:
+          title: Whether a modification of a metadata value for this namespace should
+            trigger an indexation by the search engine
+          type: boolean
+        JsonDefinition:
+          title: Json-encoded type to provide accurate interface for edition
+          type: string
+        Label:
+          title: Human-readable Label
+          type: string
+        Namespace:
+          title: "Namespace identifier, must be unique"
+          type: string
+        Order:
+          format: int32
+          title: Order is used for sorting lists of namesapces
+          type: integer
+        Policies:
+          items:
+            $ref: '#/components/schemas/serviceResourcePolicy'
+          title: Policies securing this namespace
+          type: array
+        PoliciesContextEditable:
+          title: Context-resolved to quickly check if this meta is editable or not
+          type: boolean
+      title: Globally declared Namespace with associated policies
       type: object
     idmWorkspace:
       description: A Workspace is composed of a set of nodes UUIDs and is used to
@@ -20404,6 +20813,7 @@ components:
           type: string
         TargetNode:
           $ref: '#/components/schemas/restNodeLocator'
+      title: "Parameters used by actions. Some may use Nodes/TargetNode, but not necessarily"
       type: object
     restActionResponse:
       example:
@@ -20564,11 +20974,11 @@ components:
           Previews:
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           Size: Size
           Mode: Default
@@ -20578,9 +20988,13 @@ components:
           - Value: Value
             Namespace: Namespace
           UserMetadata:
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
           ContentsHash: ContentsHash
           HashingMethod: HashingMethod
@@ -21048,11 +21462,11 @@ components:
           Previews:
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           Size: Size
           Mode: Default
@@ -21062,9 +21476,13 @@ components:
           - Value: Value
             Namespace: Namespace
           UserMetadata:
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
           ContentsHash: ContentsHash
           HashingMethod: HashingMethod
@@ -42117,13 +42535,37 @@ components:
           type: array
         Status:
           $ref: '#/components/schemas/restActionStatus'
+      title: Response to an action triggered
       type: object
     restActionStatus:
       default: Performed
       enum:
       - Performed
       - Background
+      title: Used in an ActionResponse - currently always Background
       type: string
+    restBatchUpdateMetaList:
+      example:
+        Updates:
+        - UserMeta:
+            NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
+            Namespace: Namespace
+          Operation: PUT
+        - UserMeta:
+            NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
+            Namespace: Namespace
+          Operation: PUT
+      properties:
+        Updates:
+          items:
+            $ref: '#/components/schemas/restMetaUpdate'
+          type: array
+      title: Update directly metadata in batch
+      type: object
     restContextWorkspace:
       example:
         IsRoot: true
@@ -42165,6 +42607,7 @@ components:
           type: boolean
         Uuid:
           type: string
+      title: Current workspace information
       type: object
     restCountMeta:
       example:
@@ -42176,6 +42619,9 @@ components:
         Value:
           format: int32
           type: integer
+      title: |-
+        Open definition for a key/value metadata, value is a number
+        Using int32 to avoid json strings (for int64)
       type: object
     restCreateRequest:
       properties:
@@ -42185,6 +42631,7 @@ components:
           type: array
         Recursive:
           type: boolean
+      title: Request for creating nodes
       type: object
     restDataSourceFeatures:
       example:
@@ -42195,6 +42642,7 @@ components:
           type: boolean
         Versioned:
           type: boolean
+      title: Current datasource features
       type: object
     restError:
       example:
@@ -42228,7 +42676,7 @@ components:
       example:
         ContentType: ContentType
         Dimension: 6
-        URL: URL
+        Url: Url
         Processing: true
       properties:
         ContentType:
@@ -42238,8 +42686,9 @@ components:
           type: integer
         Processing:
           type: boolean
-        URL:
+        Url:
           type: string
+      title: Description of an available preview
       type: object
     restImageMeta:
       example:
@@ -42259,6 +42708,7 @@ components:
         Width:
           format: int32
           type: integer
+      title: "If file is an image, extracted information about this image"
       type: object
     restIncomingNode:
       properties:
@@ -42270,6 +42720,8 @@ components:
           type: string
         Type:
           $ref: '#/components/schemas/treeNodeType'
+      title: "Lightweight node representation for creation, exposing a NodeLocator\
+        \ and additional data"
       type: object
     restJsonMeta:
       example:
@@ -42280,6 +42732,7 @@ components:
           type: string
         Value:
           type: string
+      title: "Open definition for a key/value metadata, value stored in json"
       type: object
     restListTemplatesResponse:
       example:
@@ -42547,6 +43000,7 @@ components:
           type: boolean
         Owner:
           type: string
+      title: Info about content locking
       type: object
     restLookupRequest:
       properties:
@@ -42571,6 +43025,31 @@ components:
             format: int64
             type: integer
           type: array
+      title: |-
+        Request for list/search. Accepts either
+        - a list of Locators (using path/* will list a folder's first level children) to retrieve stats about nodes
+        - a Query to search nodes in a more flexible way
+      type: object
+    restMetaToggle:
+      properties:
+        Value:
+          type: boolean
+      title: "Boolean value used for special metadata (bookmark,content_lock)"
+      type: object
+    restMetaUpdate:
+      example:
+        UserMeta:
+          NodeUuid: NodeUuid
+          JsonValue: JsonValue
+          Editable: true
+          Namespace: Namespace
+        Operation: PUT
+      properties:
+        Operation:
+          $ref: '#/components/schemas/MetaUpdateOp'
+        UserMeta:
+          $ref: '#/components/schemas/restUserMeta'
+      title: Update operation on Metadata
       type: object
     restMode:
       default: Default
@@ -42579,7 +43058,32 @@ components:
       - NodeReadOnly
       - NodeWriteOnly
       - LevelReadOnly
+      title: Special permission modes for Nodes
       type: string
+    restNamespaceValuesOperation:
+      properties:
+        Operation:
+          $ref: '#/components/schemas/restNsOp'
+        Values:
+          items:
+            type: string
+          type: array
+      title: "Operations on namespaces that can persist values (typically, tags known\
+        \ values)"
+      type: object
+    restNamespaceValuesResponse:
+      example:
+        Values:
+        - Values
+        - Values
+      properties:
+        Values:
+          items:
+            type: string
+          title: List of existing values
+          type: array
+      title: Response for Namespaces values
+      type: object
     restNode:
       example:
         Activities:
@@ -42738,11 +43242,11 @@ components:
         Previews:
         - ContentType: ContentType
           Dimension: 6
-          URL: URL
+          Url: Url
           Processing: true
         - ContentType: ContentType
           Dimension: 6
-          URL: URL
+          Url: Url
           Processing: true
         Size: Size
         Mode: Default
@@ -42752,9 +43256,13 @@ components:
         - Value: Value
           Namespace: Namespace
         UserMetadata:
-        - Value: Value
+        - NodeUuid: NodeUuid
+          JsonValue: JsonValue
+          Editable: true
           Namespace: Namespace
-        - Value: Value
+        - NodeUuid: NodeUuid
+          JsonValue: JsonValue
+          Editable: true
           Namespace: Namespace
         ContentsHash: ContentsHash
         HashingMethod: HashingMethod
@@ -43128,10 +43636,11 @@ components:
           $ref: '#/components/schemas/treeNodeType'
         UserMetadata:
           items:
-            $ref: '#/components/schemas/restJsonMeta'
+            $ref: '#/components/schemas/restUserMeta'
           type: array
         Uuid:
           type: string
+      title: Representation of a file or folder
       type: object
     restNodeCollection:
       example:
@@ -43317,11 +43826,11 @@ components:
           Previews:
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           Size: Size
           Mode: Default
@@ -43331,9 +43840,13 @@ components:
           - Value: Value
             Namespace: Namespace
           UserMetadata:
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
           ContentsHash: ContentsHash
           HashingMethod: HashingMethod
@@ -43801,11 +44314,11 @@ components:
           Previews:
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           Size: Size
           Mode: Default
@@ -43815,9 +44328,13 @@ components:
           - Value: Value
             Namespace: Namespace
           UserMetadata:
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
           ContentsHash: ContentsHash
           HashingMethod: HashingMethod
@@ -44140,6 +44657,8 @@ components:
           type: array
         Pagination:
           $ref: '#/components/schemas/restPagination'
+      title: "List of nodes, as returned by list/search operations. Facets and Pagination\
+        \ may be empty"
       type: object
     restNodeLocator:
       properties:
@@ -44147,7 +44666,28 @@ components:
           type: string
         Uuid:
           type: string
+      title: Simple Uuid/Path discriminator to locate a node
       type: object
+    restNodeUpdates:
+      properties:
+        Bookmark:
+          $ref: '#/components/schemas/restMetaToggle'
+        ContentLock:
+          $ref: '#/components/schemas/restMetaToggle'
+        MetaUpdates:
+          items:
+            $ref: '#/components/schemas/restMetaUpdate'
+          title: Updates to metadata
+          type: array
+      title: Set of updates to apply to metadata
+      type: object
+    restNsOp:
+      default: PUT
+      enum:
+      - PUT
+      - DELETE
+      title: Operation on namespaces
+      type: string
     restPagination:
       example:
         CurrentPage: 5
@@ -44197,8 +44737,10 @@ components:
           type: string
         Uuid:
           type: string
+      title: Response to public link deletion
       type: object
     restSelection:
+      description: Request to create a selection from a list of nodes.
       example:
         Uuid: Uuid
         Nodes:
@@ -44358,11 +44900,11 @@ components:
           Previews:
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           Size: Size
           Mode: Default
@@ -44372,9 +44914,13 @@ components:
           - Value: Value
             Namespace: Namespace
           UserMetadata:
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
           ContentsHash: ContentsHash
           HashingMethod: HashingMethod
@@ -44842,11 +45388,11 @@ components:
           Previews:
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           - ContentType: ContentType
             Dimension: 6
-            URL: URL
+            Url: Url
             Processing: true
           Size: Size
           Mode: Default
@@ -44856,9 +45402,13 @@ components:
           - Value: Value
             Namespace: Namespace
           UserMetadata:
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
-          - Value: Value
+          - NodeUuid: NodeUuid
+            JsonValue: JsonValue
+            Editable: true
             Namespace: Namespace
           ContentsHash: ContentsHash
           HashingMethod: HashingMethod
@@ -45695,7 +46245,9 @@ components:
           title: Set if updating an existing password
           type: string
         Uuid:
+          title: For Updates only
           type: string
+      title: Create or update a public link on a node
       type: object
     restUserActionType:
       default: delete
@@ -45706,7 +46258,92 @@ components:
       - move
       - extract
       - compress
+      title: Authorized actions that user can trigger
       type: string
+    restUserMeta:
+      example:
+        NodeUuid: NodeUuid
+        JsonValue: JsonValue
+        Editable: true
+        Namespace: Namespace
+      properties:
+        Editable:
+          type: boolean
+        JsonValue:
+          type: string
+        Namespace:
+          type: string
+        NodeUuid:
+          type: string
+      title: Userspace metadata (namespaces are defined by admin)
+      type: object
+    restUserMetaList:
+      example:
+        UserMeta:
+        - NodeUuid: NodeUuid
+          JsonValue: JsonValue
+          Editable: true
+          Namespace: Namespace
+        - NodeUuid: NodeUuid
+          JsonValue: JsonValue
+          Editable: true
+          Namespace: Namespace
+      properties:
+        UserMeta:
+          items:
+            $ref: '#/components/schemas/restUserMeta'
+          type: array
+      title: List of UserMeta
+      type: object
+    restUserMetaNamespaceCollection:
+      example:
+        Namespaces:
+        - Order: 0
+          PoliciesContextEditable: true
+          Policies:
+          - Action: ANY
+            Resource: Resource
+            JsonConditions: JsonConditions
+            Effect: deny
+            id: id
+            Subject: Subject
+          - Action: ANY
+            Resource: Resource
+            JsonConditions: JsonConditions
+            Effect: deny
+            id: id
+            Subject: Subject
+          JsonDefinition: JsonDefinition
+          Label: Label
+          Indexable: true
+          Namespace: Namespace
+        - Order: 0
+          PoliciesContextEditable: true
+          Policies:
+          - Action: ANY
+            Resource: Resource
+            JsonConditions: JsonConditions
+            Effect: deny
+            id: id
+            Subject: Subject
+          - Action: ANY
+            Resource: Resource
+            JsonConditions: JsonConditions
+            Effect: deny
+            id: id
+            Subject: Subject
+          JsonDefinition: JsonDefinition
+          Label: Label
+          Indexable: true
+          Namespace: Namespace
+      properties:
+        Namespaces:
+          items:
+            $ref: '#/components/schemas/idmUserMetaNamespace'
+          title: List of user meta Namespaces
+          type: array
+      title: Collection of Meta Namespaces
+      type: object
     serviceOperationType:
       default: OR
       enum:

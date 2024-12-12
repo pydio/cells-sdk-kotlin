@@ -15,6 +15,8 @@
 
 package com.pydio.kotlin.openapi.model
 
+import com.pydio.kotlin.openapi.model.MetaUpdateOp
+import com.pydio.kotlin.openapi.model.RestUserMeta
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -22,26 +24,18 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param contentType 
- * @param dimension 
- * @param processing 
- * @param url 
+ * @param operation 
+ * @param userMeta 
  */
 
 
-data class RestFilePreview (
+data class RestMetaUpdate (
 
-    @Json(name = "ContentType")
-    val contentType: kotlin.String? = null,
+    @Json(name = "Operation")
+    val operation: MetaUpdateOp? = MetaUpdateOp.PUT,
 
-    @Json(name = "Dimension")
-    val dimension: kotlin.Int? = null,
-
-    @Json(name = "Processing")
-    val processing: kotlin.Boolean? = null,
-
-    @Json(name = "Url")
-    val url: kotlin.String? = null
+    @Json(name = "UserMeta")
+    val userMeta: RestUserMeta? = null
 
 ) {
 

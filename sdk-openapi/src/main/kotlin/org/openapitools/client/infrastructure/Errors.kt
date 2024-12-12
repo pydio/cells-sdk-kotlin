@@ -1,5 +1,5 @@
 @file:Suppress("unused")
-package com.pydio.kotlin.openapi.infrastructure
+package org.openapitools.client.infrastructure
 
 import java.lang.RuntimeException
 

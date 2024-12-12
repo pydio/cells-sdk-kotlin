@@ -26,6 +26,7 @@ import com.pydio.kotlin.openapi.model.RestJsonMeta
 import com.pydio.kotlin.openapi.model.RestLockInfo
 import com.pydio.kotlin.openapi.model.RestMode
 import com.pydio.kotlin.openapi.model.RestShareLink
+import com.pydio.kotlin.openapi.model.RestUserMeta
 import com.pydio.kotlin.openapi.model.TreeNodeType
 
 import com.squareup.moshi.Json
@@ -130,7 +131,7 @@ data class RestNode (
     val type: TreeNodeType? = TreeNodeType.UNKNOWN,
 
     @Json(name = "UserMetadata")
-    val userMetadata: kotlin.collections.List<RestJsonMeta>? = null,
+    val userMetadata: kotlin.collections.List<RestUserMeta>? = null,
 
     @Json(name = "Uuid")
     val uuid: kotlin.String? = null

@@ -1,4 +1,4 @@
-package com.pydio.kotlin.openapi.infrastructure
+package org.openapitools.client.infrastructure
 
 /**
  * Defines a config object for a given request.

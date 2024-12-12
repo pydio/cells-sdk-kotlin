@@ -15,6 +15,7 @@
 
 package com.pydio.kotlin.openapi.model
 
+import com.pydio.kotlin.openapi.model.RestNsOp
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -22,26 +23,18 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param contentType 
- * @param dimension 
- * @param processing 
- * @param url 
+ * @param operation 
+ * @param propertyValues 
  */
 
 
-data class RestFilePreview (
+data class RestNamespaceValuesOperation (
 
-    @Json(name = "ContentType")
-    val contentType: kotlin.String? = null,
+    @Json(name = "Operation")
+    val operation: RestNsOp? = RestNsOp.PUT,
 
-    @Json(name = "Dimension")
-    val dimension: kotlin.Int? = null,
-
-    @Json(name = "Processing")
-    val processing: kotlin.Boolean? = null,
-
-    @Json(name = "Url")
-    val url: kotlin.String? = null
+    @Json(name = "Values")
+    val propertyValues: kotlin.collections.List<kotlin.String>? = null
 
 ) {
 

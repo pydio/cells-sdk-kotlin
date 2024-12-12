@@ -19,20 +19,27 @@ import java.io.IOException
 import okhttp3.Call
 import okhttp3.HttpUrl
 
+import com.pydio.kotlin.openapi.model.IdmSearchUserMetaRequest
 import com.pydio.kotlin.openapi.model.JobsCtrlCommand
 import com.pydio.kotlin.openapi.model.JobsJob
 import com.pydio.kotlin.openapi.model.RestActionParameters
 import com.pydio.kotlin.openapi.model.RestActionResponse
+import com.pydio.kotlin.openapi.model.RestBatchUpdateMetaList
 import com.pydio.kotlin.openapi.model.RestCreateRequest
 import com.pydio.kotlin.openapi.model.RestError
 import com.pydio.kotlin.openapi.model.RestListTemplatesResponse
 import com.pydio.kotlin.openapi.model.RestLookupRequest
+import com.pydio.kotlin.openapi.model.RestNamespaceValuesOperation
+import com.pydio.kotlin.openapi.model.RestNamespaceValuesResponse
 import com.pydio.kotlin.openapi.model.RestNode
 import com.pydio.kotlin.openapi.model.RestNodeCollection
+import com.pydio.kotlin.openapi.model.RestNodeUpdates
 import com.pydio.kotlin.openapi.model.RestPublicLinkDeleteSuccess
 import com.pydio.kotlin.openapi.model.RestSelection
 import com.pydio.kotlin.openapi.model.RestShareLink
 import com.pydio.kotlin.openapi.model.RestUpsertPublicLinkRequest
+import com.pydio.kotlin.openapi.model.RestUserMetaList
+import com.pydio.kotlin.openapi.model.RestUserMetaNamespaceCollection
 
 import com.squareup.moshi.Json
 
@@ -56,6 +63,78 @@ class NodeServiceApi(basePath: kotlin.String = defaultBasePath, client: Call.Fac
         val defaultBasePath: String by lazy {
             System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost")
         }
+    }
+
+    /**
+     * Update/delete user meta in batch. Passed UserMetas must contain a NodeUuid
+     * 
+     * @param body 
+     * @return RestBatchUpdateMetaList
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    fun batchUpdateMeta(body: RestBatchUpdateMetaList) : RestBatchUpdateMetaList {
+        val localVarResponse = batchUpdateMetaWithHttpInfo(body = body)
+
+        return when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as RestBatchUpdateMetaList
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()} ${localVarError.body}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Update/delete user meta in batch. Passed UserMetas must contain a NodeUuid
+     * 
+     * @param body 
+     * @return ApiResponse<RestBatchUpdateMetaList?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    fun batchUpdateMetaWithHttpInfo(body: RestBatchUpdateMetaList) : ApiResponse<RestBatchUpdateMetaList?> {
+        val localVariableConfig = batchUpdateMetaRequestConfig(body = body)
+
+        return request<RestBatchUpdateMetaList, RestBatchUpdateMetaList>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation batchUpdateMeta
+     *
+     * @param body 
+     * @return RequestConfig
+     */
+    fun batchUpdateMetaRequestConfig(body: RestBatchUpdateMetaList) : RequestConfig<RestBatchUpdateMetaList> {
+        val localVariableBody = body
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.PATCH,
+            path = "/node/meta/batch",
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
     }
 
     /**
@@ -304,7 +383,7 @@ class NodeServiceApi(basePath: kotlin.String = defaultBasePath, client: Call.Fac
     /**
      * Create and persist a temporary selection of nodes, that can be used by other actions
      * 
-     * @param body 
+     * @param body Request to create a selection from a list of nodes.
      * @return RestSelection
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -335,7 +414,7 @@ class NodeServiceApi(basePath: kotlin.String = defaultBasePath, client: Call.Fac
     /**
      * Create and persist a temporary selection of nodes, that can be used by other actions
      * 
-     * @param body 
+     * @param body Request to create a selection from a list of nodes.
      * @return ApiResponse<RestSelection?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -353,7 +432,7 @@ class NodeServiceApi(basePath: kotlin.String = defaultBasePath, client: Call.Fac
     /**
      * To obtain the request config of the operation createSelection
      *
-     * @param body 
+     * @param body Request to create a selection from a list of nodes.
      * @return RequestConfig
      */
     fun createSelectionRequestConfig(body: RestSelection) : RequestConfig<RestSelection> {
@@ -801,6 +880,176 @@ class NodeServiceApi(basePath: kotlin.String = defaultBasePath, client: Call.Fac
     }
 
     /**
+     * enum for parameter operationOperation
+     */
+     enum class OperationOperationListNamespaceValues(val value: kotlin.String) {
+         @Json(name = "PUT") PUT("PUT"),
+         @Json(name = "DELETE") DELETE("DELETE");
+
+        /**
+         * Override [toString()] to avoid using the enum variable name as the value, and instead use
+         * the actual value defined in the API spec file.
+         *
+         * This solves a problem when the variable name and its value are different, and ensures that
+         * the client sends the correct enum values to the server always.
+         */
+        override fun toString(): kotlin.String = "$value"
+     }
+
+    /**
+     * List values for a given namespace
+     * 
+     * @param namespace List persisted values for this namespace
+     * @param operationOperation  (optional, default to PUT)
+     * @param operationValues  (optional)
+     * @return RestNamespaceValuesResponse
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    fun listNamespaceValues(namespace: kotlin.String, operationOperation: OperationOperationListNamespaceValues? = OperationOperationListNamespaceValues.PUT, operationValues: kotlin.collections.List<kotlin.String>? = null) : RestNamespaceValuesResponse {
+        val localVarResponse = listNamespaceValuesWithHttpInfo(namespace = namespace, operationOperation = operationOperation, operationValues = operationValues)
+
+        return when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as RestNamespaceValuesResponse
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()} ${localVarError.body}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * List values for a given namespace
+     * 
+     * @param namespace List persisted values for this namespace
+     * @param operationOperation  (optional, default to PUT)
+     * @param operationValues  (optional)
+     * @return ApiResponse<RestNamespaceValuesResponse?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    fun listNamespaceValuesWithHttpInfo(namespace: kotlin.String, operationOperation: OperationOperationListNamespaceValues?, operationValues: kotlin.collections.List<kotlin.String>?) : ApiResponse<RestNamespaceValuesResponse?> {
+        val localVariableConfig = listNamespaceValuesRequestConfig(namespace = namespace, operationOperation = operationOperation, operationValues = operationValues)
+
+        return request<Unit, RestNamespaceValuesResponse>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation listNamespaceValues
+     *
+     * @param namespace List persisted values for this namespace
+     * @param operationOperation  (optional, default to PUT)
+     * @param operationValues  (optional)
+     * @return RequestConfig
+     */
+    fun listNamespaceValuesRequestConfig(namespace: kotlin.String, operationOperation: OperationOperationListNamespaceValues?, operationValues: kotlin.collections.List<kotlin.String>?) : RequestConfig<Unit> {
+        val localVariableBody = null
+        val localVariableQuery: MultiValueMap = mutableMapOf<kotlin.String, kotlin.collections.List<kotlin.String>>()
+            .apply {
+                if (operationOperation != null) {
+                    put("Operation.Operation", listOf(operationOperation.value))
+                }
+                if (operationValues != null) {
+                    put("Operation.Values", toMultiValue(operationValues.toList(), "multi"))
+                }
+            }
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.GET,
+            path = "/node/meta/namespace/{Namespace}".replace("{"+"Namespace"+"}", encodeURIComponent(namespace.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+    /**
+     * List defined meta namespaces
+     * 
+     * @return RestUserMetaNamespaceCollection
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    fun listNamespaces() : RestUserMetaNamespaceCollection {
+        val localVarResponse = listNamespacesWithHttpInfo()
+
+        return when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as RestUserMetaNamespaceCollection
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()} ${localVarError.body}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * List defined meta namespaces
+     * 
+     * @return ApiResponse<RestUserMetaNamespaceCollection?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    fun listNamespacesWithHttpInfo() : ApiResponse<RestUserMetaNamespaceCollection?> {
+        val localVariableConfig = listNamespacesRequestConfig()
+
+        return request<Unit, RestUserMetaNamespaceCollection>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation listNamespaces
+     *
+     * @return RequestConfig
+     */
+    fun listNamespacesRequestConfig() : RequestConfig<Unit> {
+        val localVariableBody = null
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.GET,
+            path = "/node/meta/namespace",
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+    /**
      * List all known versions of a node
      * 
      * @param uuid 
@@ -952,6 +1201,81 @@ class NodeServiceApi(basePath: kotlin.String = defaultBasePath, client: Call.Fac
     }
 
     /**
+     * UpdateUserMeta is used to update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
+     * 
+     * @param uuid 
+     * @param nodeUpdates 
+     * @return RestNode
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    fun patchNode(uuid: kotlin.String, nodeUpdates: RestNodeUpdates) : RestNode {
+        val localVarResponse = patchNodeWithHttpInfo(uuid = uuid, nodeUpdates = nodeUpdates)
+
+        return when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as RestNode
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()} ${localVarError.body}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * UpdateUserMeta is used to update a node specific meta. It is used for reserved meta as well (bookmarks, contentLock)
+     * 
+     * @param uuid 
+     * @param nodeUpdates 
+     * @return ApiResponse<RestNode?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    fun patchNodeWithHttpInfo(uuid: kotlin.String, nodeUpdates: RestNodeUpdates) : ApiResponse<RestNode?> {
+        val localVariableConfig = patchNodeRequestConfig(uuid = uuid, nodeUpdates = nodeUpdates)
+
+        return request<RestNodeUpdates, RestNode>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation patchNode
+     *
+     * @param uuid 
+     * @param nodeUpdates 
+     * @return RequestConfig
+     */
+    fun patchNodeRequestConfig(uuid: kotlin.String, nodeUpdates: RestNodeUpdates) : RequestConfig<RestNodeUpdates> {
+        val localVariableBody = nodeUpdates
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.PATCH,
+            path = "/node/u/{Uuid}".replace("{"+"Uuid"+"}", encodeURIComponent(uuid.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+    /**
      * enum for parameter name
      */
      enum class NamePerformAction(val value: kotlin.String) {
@@ -1056,6 +1380,78 @@ class NodeServiceApi(basePath: kotlin.String = defaultBasePath, client: Call.Fac
     }
 
     /**
+     * Search a list of meta by node Id or by User id and by namespace
+     * 
+     * @param body 
+     * @return RestUserMetaList
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    fun searchMeta(body: IdmSearchUserMetaRequest) : RestUserMetaList {
+        val localVarResponse = searchMetaWithHttpInfo(body = body)
+
+        return when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as RestUserMetaList
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()} ${localVarError.body}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Search a list of meta by node Id or by User id and by namespace
+     * 
+     * @param body 
+     * @return ApiResponse<RestUserMetaList?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    fun searchMetaWithHttpInfo(body: IdmSearchUserMetaRequest) : ApiResponse<RestUserMetaList?> {
+        val localVariableConfig = searchMetaRequestConfig(body = body)
+
+        return request<IdmSearchUserMetaRequest, RestUserMetaList>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation searchMeta
+     *
+     * @param body 
+     * @return RequestConfig
+     */
+    fun searchMetaRequestConfig(body: IdmSearchUserMetaRequest) : RequestConfig<IdmSearchUserMetaRequest> {
+        val localVariableBody = body
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.POST,
+            path = "/node/meta",
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+    /**
      * List available templates for hydrating empty files
      * 
      * @param templateType  (optional)
@@ -1132,10 +1528,85 @@ class NodeServiceApi(basePath: kotlin.String = defaultBasePath, client: Call.Fac
     }
 
     /**
+     * Add/delete a values for a given namespace
+     * 
+     * @param namespace List persisted values for this namespace
+     * @param operation 
+     * @return RestNamespaceValuesResponse
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    fun updateNamespaceValues(namespace: kotlin.String, operation: RestNamespaceValuesOperation) : RestNamespaceValuesResponse {
+        val localVarResponse = updateNamespaceValuesWithHttpInfo(namespace = namespace, operation = operation)
+
+        return when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as RestNamespaceValuesResponse
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()} ${localVarError.body}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Add/delete a values for a given namespace
+     * 
+     * @param namespace List persisted values for this namespace
+     * @param operation 
+     * @return ApiResponse<RestNamespaceValuesResponse?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    fun updateNamespaceValuesWithHttpInfo(namespace: kotlin.String, operation: RestNamespaceValuesOperation) : ApiResponse<RestNamespaceValuesResponse?> {
+        val localVariableConfig = updateNamespaceValuesRequestConfig(namespace = namespace, operation = operation)
+
+        return request<RestNamespaceValuesOperation, RestNamespaceValuesResponse>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation updateNamespaceValues
+     *
+     * @param namespace List persisted values for this namespace
+     * @param operation 
+     * @return RequestConfig
+     */
+    fun updateNamespaceValuesRequestConfig(namespace: kotlin.String, operation: RestNamespaceValuesOperation) : RequestConfig<RestNamespaceValuesOperation> {
+        val localVariableBody = operation
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.PATCH,
+            path = "/node/meta/namespace/{Namespace}".replace("{"+"Namespace"+"}", encodeURIComponent(namespace.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+    /**
      * Update public link settings
      * 
-     * @param uuid 
-     * @param link 
+     * @param uuid For Updates only
+     * @param link Public link definition
      * @param passwordEnabled Whether it has Password enabled (optional)
      * @param createPassword Set if switching from no password to password (optional)
      * @param updatePassword Set if updating an existing password (optional)
@@ -1170,8 +1641,8 @@ class NodeServiceApi(basePath: kotlin.String = defaultBasePath, client: Call.Fac
     /**
      * Update public link settings
      * 
-     * @param uuid 
-     * @param link 
+     * @param uuid For Updates only
+     * @param link Public link definition
      * @param passwordEnabled Whether it has Password enabled (optional)
      * @param createPassword Set if switching from no password to password (optional)
      * @param updatePassword Set if updating an existing password (optional)
@@ -1193,8 +1664,8 @@ class NodeServiceApi(basePath: kotlin.String = defaultBasePath, client: Call.Fac
     /**
      * To obtain the request config of the operation updatePublicLink
      *
-     * @param uuid 
-     * @param link 
+     * @param uuid For Updates only
+     * @param link Public link definition
      * @param passwordEnabled Whether it has Password enabled (optional)
      * @param createPassword Set if switching from no password to password (optional)
      * @param updatePassword Set if updating an existing password (optional)
@@ -1225,6 +1696,82 @@ class NodeServiceApi(basePath: kotlin.String = defaultBasePath, client: Call.Fac
         return RequestConfig(
             method = RequestMethod.PATCH,
             path = "/node/link/{Uuid}".replace("{"+"Uuid"+"}", encodeURIComponent(uuid.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+    /**
+     * Special API for Bookmarks, will load userMeta and the associated nodes, and return as a node list
+     * 
+     * @param all  (optional)
+     * @return RestNodeCollection
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    fun userBookmarks(all: kotlin.Boolean? = null) : RestNodeCollection {
+        val localVarResponse = userBookmarksWithHttpInfo(all = all)
+
+        return when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as RestNodeCollection
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()} ${localVarError.body}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Special API for Bookmarks, will load userMeta and the associated nodes, and return as a node list
+     * 
+     * @param all  (optional)
+     * @return ApiResponse<RestNodeCollection?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    fun userBookmarksWithHttpInfo(all: kotlin.Boolean?) : ApiResponse<RestNodeCollection?> {
+        val localVariableConfig = userBookmarksRequestConfig(all = all)
+
+        return request<Unit, RestNodeCollection>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation userBookmarks
+     *
+     * @param all  (optional)
+     * @return RequestConfig
+     */
+    fun userBookmarksRequestConfig(all: kotlin.Boolean?) : RequestConfig<Unit> {
+        val localVariableBody = null
+        val localVariableQuery: MultiValueMap = mutableMapOf<kotlin.String, kotlin.collections.List<kotlin.String>>()
+            .apply {
+                if (all != null) {
+                    put("All", listOf(all.toString()))
+                }
+            }
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.GET,
+            path = "/node/bookmarks",
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
