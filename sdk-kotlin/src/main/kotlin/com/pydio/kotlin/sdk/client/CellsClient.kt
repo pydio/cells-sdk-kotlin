@@ -46,7 +46,6 @@ import com.pydio.kotlin.sdk.api.ui.WorkspaceNode
 import com.pydio.kotlin.sdk.client.model.DocumentRegistry
 import com.pydio.kotlin.sdk.transport.CellsTransport
 import com.pydio.kotlin.sdk.transport.StateID
-import com.pydio.kotlin.sdk.utils.FileNodeUtils.toTreeNodePath
 import com.pydio.kotlin.sdk.utils.IoHelpers
 import com.pydio.kotlin.sdk.utils.Log
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -180,7 +179,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
     ): PageOptions {
         val request = RestGetBulkMetaRequest(
             nodePaths = listOf(
-                toTreeNodePath(
+                StateID.withSlug(
                     slug, if ("/" == path) "/*" else "$path/*"
                 )
             ),
@@ -241,7 +240,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
 
     @Throws(SDKException::class)
     override fun delete(slug: String, paths: Array<String>, removePermanently: Boolean) {
-        val nodes = paths.map { TreeNode(path = toTreeNodePath(slug, it)) }
+        val nodes = paths.map { TreeNode(path = StateID.withSlug(slug, it)) }
         val request = RestDeleteNodesRequest(nodes = nodes, removePermanently = removePermanently)
         try {
             treeServiceApi().deleteNodes(request)
@@ -393,7 +392,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
     @Throws(SDKException::class)
     override fun getNodeMeta(ws: String, file: String): TreeNode? {
         val request = RestGetBulkMetaRequest(
-            allMetaProviders = true, nodePaths = listOf(toTreeNodePath(ws, file))
+            allMetaProviders = true, nodePaths = listOf(StateID.withSlug(ws, file))
         )
         val response: RestBulkMetaResponse = try {
             treeServiceApi().bulkStatNodes(request)
@@ -402,7 +401,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
             throw SDKException(e)
         }
         if (response.nodes.isNullOrEmpty()) {
-            Log.w(logTag, "No node found for " + toTreeNodePath(ws, file))
+            Log.w(logTag, "No node found for " + StateID.withSlug(ws, file))
             return null
         }
         return response.nodes?.let { it[0] }
@@ -940,7 +939,7 @@ class CellsClient(transport: Transport, private val s3Client: S3Client) : Client
     @Throws(SDKException::class)
     private fun getNodeUuid(stateID: StateID): String? {
         return try {
-            treeServiceApi().headNode(toTreeNodePath(stateID)).node?.uuid
+            treeServiceApi().headNode(StateID.toTreeNodePath(stateID)).node?.uuid
         } catch (e: ClientException) {
             throw SDKException("Cannot get UUID for $stateID", e)
         }

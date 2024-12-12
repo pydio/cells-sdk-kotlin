@@ -6,7 +6,6 @@ import com.pydio.kotlin.sdk.client.CellsClient
 import com.pydio.kotlin.sdk.transport.CellsMinioClient
 import com.pydio.kotlin.sdk.transport.CellsTransport
 import com.pydio.kotlin.sdk.transport.StateID
-import com.pydio.kotlin.sdk.utils.FileNodeUtils
 import com.pydio.kotlin.sdk.utils.MemoryStore
 import com.pydio.kotlin.sdk.utils.tests.NoAwsS3Client
 import com.pydio.kotlin.sdk.utils.tests.RemoteServerConfig
@@ -19,7 +18,6 @@ import org.junit.Before
 import org.junit.Test
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
-import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 
 class SimpleCrudTest {
@@ -124,7 +122,7 @@ class SimpleCrudTest {
                 if (expected == retrievedMsg) {
                     break
                 }
-                println("Wait 2s before retry...")
+                println("Try #${i + 1} failed. Waiting 2s before retry.")
                 Thread.sleep(2000)
             } catch (e: Exception) {
                 println("Unexpected Exception: $e")
@@ -148,7 +146,7 @@ class SimpleCrudTest {
                     // Check if deleted file is still there
                     val founds = mutableListOf<String>()
                     cellsClient.ls(slug, targetStateID.parent().file!!, null) { node ->
-                        val currName = FileNodeUtils.getNameFromPath(node.path!!)
+                        val currName = TestUtils.getNameFromPath(node.path!!)
                         if (name == currName) {
                             founds.add(name)
                         }
@@ -157,7 +155,7 @@ class SimpleCrudTest {
                         deleted = true
                         break
                     }
-                    println("Wait 2s before retry...")
+                    println("Try #${i + 1} failed. Waiting 2s before retry.")
                     Thread.sleep(2000)
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
@@ -165,19 +163,6 @@ class SimpleCrudTest {
             }
             assert(deleted == true)
         }
-    }
-
-    private suspend fun dlFileStringContent(
-        transport: CellsTransport,
-        stateID: StateID,
-        outputStream: OutputStream,
-    ) {
-        val minioClient = CellsMinioClient(transport)
-        minioClient.download(
-            stateID = stateID,
-            outputStream = outputStream,
-            progressListener = DebugPL()
-        )
     }
 
     class DebugPL : ProgressListener {

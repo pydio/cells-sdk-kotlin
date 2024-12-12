@@ -74,4 +74,12 @@ object TestUtils {
             OS_MAC
         } else throw RuntimeException("Unsupported OS")
     }
+
+    fun getNameFromPath(path: String): String {
+        val index = path.lastIndexOf("/")
+        return if (index < 0) {
+            path
+        } else path.substring(index + 1)
+    }
+
 }

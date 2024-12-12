@@ -49,7 +49,6 @@ urlencoder = { module = "net.thauvin.erik.urlencoder:urlencoder-lib", version.re
 
 aws-sdk-s3 = { module = "com.amazonaws:aws-android-sdk-s3", version.ref = "aws-sdk-s3-version" }
 
-
 # Tests
 #kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-test-version" }
 junit = { module = "junit:junit", version.ref = "junit-version" }

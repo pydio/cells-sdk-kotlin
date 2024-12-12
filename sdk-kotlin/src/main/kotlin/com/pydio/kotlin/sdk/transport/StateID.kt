@@ -1,5 +1,7 @@
 package com.pydio.kotlin.sdk.transport
 
+import com.pydio.kotlin.sdk.api.ErrorCodes
+import com.pydio.kotlin.sdk.api.SDKException
 import com.pydio.kotlin.sdk.api.Transport
 import com.pydio.kotlin.sdk.utils.Log
 import java.io.UnsupportedEncodingException
@@ -297,6 +299,26 @@ class StateID {
             } catch (e: UnsupportedEncodingException) {
                 throw RuntimeException("Unexpected decoding issue", e)
             }
+        }
+
+        @Throws(SDKException::class)
+        fun toTreeNodePath(stateID: StateID): String {
+            val path = if (stateID.slug.isNullOrEmpty()) {
+                throw SDKException(
+                    ErrorCodes.illegal_argument,
+                    "cannot stat at $stateID, define a WS"
+                )
+            } else if (stateID.file.isNullOrEmpty()) {
+                "${stateID.slug}/"
+            } else {
+                "${stateID.slug}/${stateID.file}"
+            }
+
+            return path
+        }
+
+        fun withSlug(slug: String, path: String): String {
+            return slug + path
         }
     }
 }

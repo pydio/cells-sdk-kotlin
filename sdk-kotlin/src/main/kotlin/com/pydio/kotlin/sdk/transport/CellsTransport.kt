@@ -37,20 +37,15 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 class CellsTransport(
-    credentialService: CredentialService?,
-    username: String,
-    server: Server,
-    encoder: CustomEncoder
+    private val credentialService: CredentialService?,
+    // TODO rather rely on a state ID
+    override val username: String,
+    override val server: Server,
+    private val encoder: CustomEncoder
 ) : Transport, SdkNames {
 
-    private val encoder: CustomEncoder
     private val timeFormatter: SimpleDateFormat = SimpleDateFormat("HH:mm")
-    private val credentialService: CredentialService?
     private var userAgent: String? = null
-
-    // TODO rather rely on a state ID
-    override val username: String
-    override val server: Server
 
     override val id: String
         get() = stateID.id
@@ -62,13 +57,6 @@ class CellsTransport(
             Thread.dumpStack()
             return false
         }
-
-    init {
-        this.credentialService = credentialService
-        this.username = username
-        this.server = server
-        this.encoder = encoder
-    }
 
     override fun getUserAgent(): String {
         userAgent?.let { return it }

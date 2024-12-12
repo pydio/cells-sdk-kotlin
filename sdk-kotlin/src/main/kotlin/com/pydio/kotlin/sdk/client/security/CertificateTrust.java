@@ -5,13 +5,6 @@ import java.security.cert.X509Certificate;
 
 public class CertificateTrust {
 
-    public interface Helper extends Serializable {
-        boolean isServerTrusted(X509Certificate[] chain);
-
-        X509Certificate[] getAcceptedIssuers();
-    }
-
-
     public static Helper revokeAllHelper() {
         return new Helper() {
             @Override
@@ -40,4 +33,9 @@ public class CertificateTrust {
         };
     }
 
+    public interface Helper extends Serializable {
+        boolean isServerTrusted(X509Certificate[] chain);
+
+        X509Certificate[] getAcceptedIssuers();
+    }
 }
