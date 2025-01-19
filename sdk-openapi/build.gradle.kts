@@ -52,8 +52,8 @@ dependencies {
 
     implementation(awssdk.services.s3)
 
-    implementation(platform("org.apache.logging.log4j:log4j-bom:2.24.3"))
-    implementation("org.apache.logging.log4j:log4j-slf4j2-impl")
+    implementation(platform(libs.log4j.bom))
+    implementation(libs.log4j.impl)
 
     testImplementation(libs.kotlintest.junit5)
 }

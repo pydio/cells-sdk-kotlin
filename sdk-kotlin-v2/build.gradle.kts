@@ -28,12 +28,11 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.moshi.adapters)
 
-    testImplementation(libs.kotlintest.junit5)
-
     implementation(awssdk.services.s3)
 
-    implementation(platform("org.apache.logging.log4j:log4j-bom:2.24.3"))
-    implementation("org.apache.logging.log4j:log4j-slf4j2-impl")
+    testImplementation(libs.kotlintest.junit5)
+    implementation(platform(libs.log4j.bom))
+    implementation(libs.log4j.impl)
 }
 
 tasks.withType<KotlinCompile> {
