@@ -8,7 +8,7 @@ plugins {
     id("com.diffplug.spotless") version "7.0.2"
 }
 
-group = "org.sinou.android.kotlin"
+group = "com.pydio.kotlin"
 version = "0.1.1-dev"
 val kotlinVersion = "1.9.25"
 

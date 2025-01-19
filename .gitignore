@@ -17,3 +17,6 @@ sdk-kotlin/bin/
 sdk-kotlin/src/test/resources/targets/
 sdk-kotlin/build/
 
+sdk-openapi-multiplatform/local.properties
+sdk-openapi-multiplatform/bin
+sdk-openapi-multiplatform/build
