@@ -6,20 +6,8 @@ build/
 local.properties
 cells-sdk-kotlin.iml
 
-sdk-kotlin/bin/
-sdk-kotlin/src/test/resources/targets/
-sdk-kotlin/build/
-
 sdk-kotlin-v2/bin/
 sdk-kotlin-v2/build/
 
 sdk-openapi/bin/
 sdk-openapi/build/
-
-sdk-openapi-moshi/local.properties
-sdk-openapi-moshi/bin
-sdk-openapi-moshi/build
-
-sdk-openapi-multiplatform/local.properties
-sdk-openapi-multiplatform/bin
-sdk-openapi-multiplatform/build

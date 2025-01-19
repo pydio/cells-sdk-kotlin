@@ -2,12 +2,12 @@
 
 [Kotlin](https://kotlinlang.org/) SDK for communicating with a Pydio Cells Server.
 
-
 It provides:
 
-- an automatically generated API client using [go-swagger](https://github.com/go-swagger/go-swagger)
-- [TODO] a transport layer that handles authentication and wraps AWS SDK for file transfers
-- [TODO] a bunch of basic examples that use this SDK to perform simple actions on a running Cells server instance
+- an automatically generated API client using [Open Api
+  Generator](https://openapi-generator.tech/docs/generators/kotlin/)
+- [TODO] a few samples in Kotlin Only
+- [TODO] a minimal Android app that uses both Cells and AWS SDKs
 
 ## License
 
