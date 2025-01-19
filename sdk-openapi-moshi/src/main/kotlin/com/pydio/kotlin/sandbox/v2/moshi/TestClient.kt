@@ -1,17 +1,18 @@
 package com.pydio.kotlin.sandbox.v2.moshi
 
-// import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
-// import aws.sdk.kotlin.services.s3.S3Client
-// import aws.sdk.kotlin.services.s3.model.PutObjectRequest
-// import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
-// import aws.smithy.kotlin.runtime.collections.Attributes
-// import aws.smithy.kotlin.runtime.collections.emptyAttributes
-// import aws.smithy.kotlin.runtime.content.asByteStream
-// import aws.smithy.kotlin.runtime.net.url.Url
-// import aws.smithy.kotlin.runtime.time.Instant
+import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
+import aws.sdk.kotlin.services.s3.S3Client
+import aws.sdk.kotlin.services.s3.model.PutObjectRequest
+import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import aws.smithy.kotlin.runtime.collections.Attributes
+import aws.smithy.kotlin.runtime.collections.emptyAttributes
+import aws.smithy.kotlin.runtime.content.asByteStream
+import aws.smithy.kotlin.runtime.net.url.Url
+import aws.smithy.kotlin.runtime.time.Instant
 import java.io.File
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
+import java.util.UUID
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
@@ -78,44 +79,43 @@ fun pingServer(): Int {
 //    return s3Client
 // }
 
-//
-// suspend fun putS3Object(
-//    objectKey: String,
-////     objectPath: String,
-// ) {
-//    val metadataVal = mutableMapOf<String, String>()
-//    // metadataVal["myVal"] = "test"
-//    val creds = MyCredentials(PAT, DEFAULT_GATEWAY_SECRET)
-//
-//    val request = PutObjectRequest {
-//        bucket = DEFAULT_BUCKET_NAME
-//        key = objectKey
-//        metadata = metadataVal
-//        body = getTmpFile().asByteStream()
-//    }
-//
-//    S3Client {
-//        region = DEFAULT_S3_REGION_NAME
-//        credentialsProvider = StaticCredentialsProvider(creds)
-//        endpointUrl = Url.parse("$SERVER_URL")
-//    }.use { s3 ->
-//        val response = s3.putObject(request)
-//        println("Tag information is ${response.eTag}")
-//    }
-// }
-//
-// private class MyCredentials(
-//    override val accessKeyId: String,
-//    override val secretAccessKey: String,
-//    override val sessionToken: String? = null,
-//    override val expiration: Instant? = null,
-//    override val attributes: Attributes = emptyAttributes(),
-// ) : Credentials {
-// }
+suspend fun putS3Object(
+    objectKey: String,
+    //     objectPath: String,
+) {
+  val metadataVal = mutableMapOf<String, String>()
+  // metadataVal["myVal"] = "test"
+  val creds = PatCredentials(PAT, DEFAULT_GATEWAY_SECRET)
 
-private fun getTmpFile(): File {
+  val request = PutObjectRequest {
+    bucket = DEFAULT_BUCKET_NAME
+    key = objectKey
+    metadata = metadataVal
+    body = createDummyTmpFile().asByteStream()
+  }
+
+  S3Client {
+        region = DEFAULT_S3_REGION_NAME
+        credentialsProvider = StaticCredentialsProvider(creds)
+        endpointUrl = Url.parse(SERVER_URL)
+      }
+      .use { s3 ->
+        val response = s3.putObject(request)
+        println("Tag information is ${response.eTag}")
+      }
+}
+
+private class PatCredentials(
+    override val accessKeyId: String,
+    override val secretAccessKey: String,
+    override val sessionToken: String? = null,
+    override val expiration: Instant? = null,
+    override val attributes: Attributes = emptyAttributes(),
+) : Credentials
+
+private fun createDummyTmpFile(): File {
   val path = createTempFile(prefix = "temp_", suffix = ".txt")
-  path.writeText("This is a test file to test put object")
+  path.writeText("This is a test file to test put object with an unique part: ${unique(16)}")
   // tempFile.deleteOnExit()
   return path.toFile()
 }
@@ -160,4 +160,9 @@ private fun unsafeClientBuilder(): OkHttpClient.Builder {
   } catch (e: Exception) {
     throw RuntimeException(e)
   }
+}
+
+fun unique(length: Int = 4): String {
+  val id: String = UUID.randomUUID().toString()
+  return id.take(length)
 }

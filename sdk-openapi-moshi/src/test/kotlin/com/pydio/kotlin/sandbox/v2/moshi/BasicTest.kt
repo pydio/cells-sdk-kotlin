@@ -13,7 +13,6 @@ import io.kotlintest.matchers.numerics.shouldBeGreaterThanOrEqual
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.ShouldSpec
-import java.util.UUID
 
 class BasicTest : ShouldSpec() {
 
@@ -71,15 +70,10 @@ class BasicTest : ShouldSpec() {
         //                )
         //                r4.status shouldBe RestActionStatus.Background
 
-        // putS3Object("common-files/tests.txt")
+        putS3Object("common-files/test-simple-put-${unique()}.txt")
       } catch (e: Exception) {
         e shouldBe null
       }
     }
   }
-}
-
-fun unique(length: Int = 4): String {
-  val id: String = UUID.randomUUID().toString()
-  return id.take(length)
 }

@@ -16,9 +16,9 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 
-//    versionCatalogs {
-//        create("awssdk") {
-//            from("aws.sdk.kotlin:version-catalog:1.0.80")
-//        }
-//    }
+    versionCatalogs {
+        create("awssdk") {
+            from("aws.sdk.kotlin:version-catalog:1.3.112")
+        }
+    }
 }
