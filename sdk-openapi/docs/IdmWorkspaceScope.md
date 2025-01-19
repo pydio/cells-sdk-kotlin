@@ -11,6 +11,3 @@
     * `ROOM` (value: `"ROOM"`)
 
     * `LINK` (value: `"LINK"`)
-
-
-

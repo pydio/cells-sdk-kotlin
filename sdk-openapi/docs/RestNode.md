@@ -29,6 +29,3 @@
 | **subscriptions** | [**kotlin.collections.List&lt;ActivitySubscription&gt;**](ActivitySubscription.md) |  |  [optional] |
 | **type** | [**TreeNodeType**](TreeNodeType.md) |  |  [optional] |
 | **userMetadata** | [**kotlin.collections.List&lt;RestUserMeta&gt;**](RestUserMeta.md) |  |  [optional] |
-
-
-

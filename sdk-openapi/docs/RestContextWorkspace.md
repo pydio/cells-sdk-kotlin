@@ -16,6 +16,3 @@
 | **scope** | [**IdmWorkspaceScope**](IdmWorkspaceScope.md) |  |  [optional] |
 | **skipRecycle** | **kotlin.Boolean** |  |  [optional] |
 | **syncable** | **kotlin.Boolean** |  |  [optional] |
-
-
-

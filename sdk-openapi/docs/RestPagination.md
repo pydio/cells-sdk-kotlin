@@ -11,6 +11,3 @@
 | **prevOffset** | **kotlin.Int** |  |  [optional] |
 | **total** | **kotlin.Int** |  |  [optional] |
 | **totalPages** | **kotlin.Int** |  |  [optional] |
-
-
-

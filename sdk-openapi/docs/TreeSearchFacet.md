@@ -12,6 +12,3 @@
 | **min** | **kotlin.String** |  |  [optional] |
 | **start** | **kotlin.Int** |  |  [optional] |
 | **term** | **kotlin.String** |  |  [optional] |
-
-
-

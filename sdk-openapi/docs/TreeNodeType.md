@@ -9,6 +9,3 @@
     * `LEAF` (value: `"LEAF"`)
 
     * `COLLECTION` (value: `"COLLECTION"`)
-
-
-

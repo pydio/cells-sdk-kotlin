@@ -15,6 +15,3 @@
     * `extract` (value: `"extract"`)
 
     * `compress` (value: `"compress"`)
-
-
-

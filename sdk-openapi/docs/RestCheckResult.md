@@ -8,6 +8,3 @@
 | **inputLocator** | [**RestNodeLocator**](RestNodeLocator.md) |  |  [optional] |
 | **nextPath** | **kotlin.String** |  |  [optional] |
 | **node** | [**RestNode**](RestNode.md) |  |  [optional] |
-
-
-

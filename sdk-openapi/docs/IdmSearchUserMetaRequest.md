@@ -9,6 +9,3 @@
 | **nodeUuids** | **kotlin.collections.List&lt;kotlin.String&gt;** |  |  [optional] |
 | **resourceQuery** | [**ServiceResourcePolicyQuery**](ServiceResourcePolicyQuery.md) |  |  [optional] |
 | **resourceSubjectOwner** | **kotlin.String** |  |  [optional] |
-
-
-

@@ -11,6 +11,3 @@
 | **sortDirDesc** | **kotlin.Boolean** |  |  [optional] |
 | **sortField** | **kotlin.String** |  |  [optional] |
 | **statFlags** | **kotlin.collections.List&lt;kotlin.Long&gt;** |  |  [optional] |
-
-
-

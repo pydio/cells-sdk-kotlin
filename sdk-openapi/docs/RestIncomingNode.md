@@ -9,6 +9,3 @@
 | **contentType** | **kotlin.String** |  |  [optional] |
 | **knownSize** | **kotlin.String** |  |  [optional] |
 | **templateUuid** | **kotlin.String** |  |  [optional] |
-
-
-

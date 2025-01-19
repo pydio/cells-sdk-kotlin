@@ -9,6 +9,3 @@
 | **empty** | **kotlin.Boolean** |  |  [optional] |
 | **leftIdentifier** | **kotlin.String** |  |  [optional] |
 | **subjects** | **kotlin.collections.List&lt;kotlin.String&gt;** |  |  [optional] |
-
-
-

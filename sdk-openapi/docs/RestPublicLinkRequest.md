@@ -9,6 +9,3 @@
 | **passwordEnabled** | **kotlin.Boolean** |  |  [optional] |
 | **updateCustomHash** | **kotlin.String** |  |  [optional] |
 | **updatePassword** | **kotlin.String** |  |  [optional] |
-
-
-

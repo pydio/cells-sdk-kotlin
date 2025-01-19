@@ -7,6 +7,3 @@
 | **bookmark** | [**RestMetaToggle**](RestMetaToggle.md) |  |  [optional] |
 | **contentLock** | [**RestMetaToggle**](RestMetaToggle.md) |  |  [optional] |
 | **metaUpdates** | [**kotlin.collections.List&lt;RestMetaUpdate&gt;**](RestMetaUpdate.md) |  |  [optional] |
-
-
-

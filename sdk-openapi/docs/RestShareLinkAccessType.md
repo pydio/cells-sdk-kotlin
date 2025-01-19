@@ -11,6 +11,3 @@
     * `Download` (value: `"Download"`)
 
     * `Upload` (value: `"Upload"`)
-
-
-

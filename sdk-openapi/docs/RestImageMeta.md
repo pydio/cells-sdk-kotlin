@@ -8,6 +8,3 @@
 | **jsonEXIF** | **kotlin.String** |  |  [optional] |
 | **orientation** | **kotlin.Int** |  |  [optional] |
 | **width** | **kotlin.Int** |  |  [optional] |
-
-
-

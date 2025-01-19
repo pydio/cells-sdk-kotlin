@@ -7,6 +7,3 @@
     * `deny` (value: `"deny"`)
 
     * `allow` (value: `"allow"`)
-
-
-

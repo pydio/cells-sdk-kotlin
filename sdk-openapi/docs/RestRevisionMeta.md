@@ -6,6 +6,3 @@
 | ------------ | ------------- | ------------- | ------------- |
 | **uuid** | **kotlin.String** |  |  |
 | **description** | **kotlin.String** |  |  [optional] |
-
-
-

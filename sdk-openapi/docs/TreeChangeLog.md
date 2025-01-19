@@ -12,6 +12,3 @@
 | **ownerUuid** | **kotlin.String** |  |  [optional] |
 | **propertySize** | **kotlin.String** |  |  [optional] |
 | **uuid** | **kotlin.String** |  |  [optional] |
-
-
-

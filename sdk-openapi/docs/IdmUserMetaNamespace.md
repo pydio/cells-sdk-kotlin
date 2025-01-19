@@ -11,6 +11,3 @@
 | **order** | **kotlin.Int** |  |  [optional] |
 | **policies** | [**kotlin.collections.List&lt;ServiceResourcePolicy&gt;**](ServiceResourcePolicy.md) |  |  [optional] |
 | **policiesContextEditable** | **kotlin.Boolean** |  |  [optional] |
-
-
-

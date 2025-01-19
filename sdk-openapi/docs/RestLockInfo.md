@@ -6,6 +6,3 @@
 | ------------ | ------------- | ------------- | ------------- |
 | **isLocked** | **kotlin.Boolean** |  |  [optional] |
 | **owner** | **kotlin.String** |  |  [optional] |
-
-
-

@@ -9,6 +9,3 @@
 | **wsScope** | **kotlin.String** |  |  [optional] |
 | **wsSlug** | **kotlin.String** |  |  [optional] |
 | **wsUuid** | **kotlin.String** |  |  [optional] |
-
-
-

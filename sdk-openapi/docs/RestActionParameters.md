@@ -10,6 +10,3 @@
 | **nodes** | [**kotlin.collections.List&lt;RestNodeLocator&gt;**](RestNodeLocator.md) |  |  [optional] |
 | **selectionUuid** | **kotlin.String** |  |  [optional] |
 | **targetNode** | [**RestNodeLocator**](RestNodeLocator.md) |  |  [optional] |
-
-
-

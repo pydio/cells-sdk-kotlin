@@ -17,6 +17,3 @@
     * `UPDATE_USER_META` (value: `"UPDATE_USER_META"`)
 
     * `DELETE` (value: `"DELETE"`)
-
-
-

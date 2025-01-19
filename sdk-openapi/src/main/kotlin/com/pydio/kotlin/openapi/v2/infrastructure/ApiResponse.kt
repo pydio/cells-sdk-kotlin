@@ -1,21 +1,25 @@
 package com.pydio.kotlin.openapi.v2.infrastructure
 
 enum class ResponseType {
-    Success, Informational, Redirection, ClientError, ServerError
+  Success,
+  Informational,
+  Redirection,
+  ClientError,
+  ServerError
 }
 
 interface Response
 
-abstract class ApiResponse<T>(val responseType: ResponseType): Response {
-    abstract val statusCode: Int
-    abstract val headers: Map<String,List<String>>
+abstract class ApiResponse<T>(val responseType: ResponseType) : Response {
+  abstract val statusCode: Int
+  abstract val headers: Map<String, List<String>>
 }
 
 class Success<T>(
     val data: T,
     override val statusCode: Int = -1,
     override val headers: Map<String, List<String>> = mapOf()
-): ApiResponse<T>(ResponseType.Success)
+) : ApiResponse<T>(ResponseType.Success)
 
 class Informational<T>(
     val statusText: String,
@@ -40,4 +44,4 @@ class ServerError<T>(
     val body: Any? = null,
     override val statusCode: Int = -1,
     override val headers: Map<String, List<String>>
-): ApiResponse<T>(ResponseType.ServerError)
+) : ApiResponse<T>(ResponseType.ServerError)
