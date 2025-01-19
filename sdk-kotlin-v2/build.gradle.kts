@@ -1,30 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("maven-publish")
     kotlin("jvm")
     application
-    id("maven-publish")
 }
 
 group = "com.pydio.kotlin"
 version = "0.1.1-dev"
-val kotlinVersion = "1.9.25"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-}
-
-buildscript {
-
-    val kotlinVersion = "1.9.25"
-    repositories {
-        maven("https://repo1.maven.org/maven2")
-    }
-
-    dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-    }
 }
 
 tasks.test {
@@ -33,12 +20,15 @@ tasks.test {
 
 dependencies {
     implementation(project(":sdk-openapi"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
-    implementation("com.squareup.moshi:moshi-adapters:1.15.2")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+
+    implementation(libs.kotlin.stdlib.jdk8)
+    implementation(libs.kotlin.reflect)
+
+    implementation(libs.okhttp)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.moshi.adapters)
+
+    testImplementation(libs.kotlintest.junit5)
 
     implementation(awssdk.services.s3)
 
