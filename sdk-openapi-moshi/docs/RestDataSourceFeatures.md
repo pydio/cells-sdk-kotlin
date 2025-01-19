@@ -6,6 +6,3 @@
 | ------------ | ------------- | ------------- | ------------- |
 | **encrypted** | **kotlin.Boolean** |  |  [optional] |
 | **versioned** | **kotlin.Boolean** |  |  [optional] |
-
-
-

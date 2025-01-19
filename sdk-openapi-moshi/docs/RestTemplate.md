@@ -9,6 +9,3 @@
 | **node** | [**RestTemplateNode**](RestTemplateNode.md) |  |  [optional] |
 | **policies** | [**kotlin.collections.List&lt;ServiceResourcePolicy&gt;**](ServiceResourcePolicy.md) |  |  [optional] |
 | **UUID** | **kotlin.String** |  |  [optional] |
-
-
-

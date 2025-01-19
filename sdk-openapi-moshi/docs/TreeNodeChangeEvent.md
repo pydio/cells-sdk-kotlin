@@ -10,6 +10,3 @@
 | **source** | [**TreeNode**](TreeNode.md) |  |  [optional] |
 | **target** | [**TreeNode**](TreeNode.md) |  |  [optional] |
 | **type** | [**TreeNodeChangeEventEventType**](TreeNodeChangeEventEventType.md) |  |  [optional] |
-
-
-

@@ -7,6 +7,3 @@
     * `Performed` (value: `"Performed"`)
 
     * `Background` (value: `"Background"`)
-
-
-

@@ -6,6 +6,3 @@
 | ------------ | ------------- | ------------- | ------------- |
 | **lat** | **kotlin.Double** |  |  [optional] |
 | **lon** | **kotlin.Double** |  |  [optional] |
-
-
-

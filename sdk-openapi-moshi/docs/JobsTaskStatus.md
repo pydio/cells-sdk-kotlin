@@ -21,6 +21,3 @@
     * `Error` (value: `"Error"`)
 
     * `Queued` (value: `"Queued"`)
-
-
-

@@ -9,6 +9,3 @@
 | **meta** | **kotlin.collections.Map&lt;kotlin.String, kotlin.String&gt;** |  |  [optional] |
 | **source** | **kotlin.String** |  |  [optional] |
 | **title** | **kotlin.String** |  |  [optional] |
-
-
-

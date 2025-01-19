@@ -7,6 +7,3 @@
     * `NODE` (value: `"NODE"`)
 
     * `USER` (value: `"USER"`)
-
-
-

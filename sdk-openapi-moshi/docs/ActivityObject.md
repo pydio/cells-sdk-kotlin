@@ -65,6 +65,3 @@
 | **updated** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **url** | [**ActivityObject**](ActivityObject.md) |  |  [optional] |
 | **width** | **kotlin.Int** |  |  [optional] |
-
-
-

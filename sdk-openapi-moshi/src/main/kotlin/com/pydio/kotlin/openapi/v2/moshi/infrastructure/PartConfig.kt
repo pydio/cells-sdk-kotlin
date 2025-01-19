@@ -1,9 +1,8 @@
 package com.pydio.kotlin.openapi.v2.moshi.infrastructure
 
 /**
- * Defines a config object for a given part of a multi-part request.
- * NOTE: Headers is a Map<String,String> because rfc2616 defines
- *       multi-valued headers as csv-only.
+ * Defines a config object for a given part of a multi-part request. NOTE: Headers is a
+ * Map<String,String> because rfc2616 defines multi-valued headers as csv-only.
  */
 data class PartConfig<T>(
     val headers: MutableMap<String, String> = mutableMapOf(),

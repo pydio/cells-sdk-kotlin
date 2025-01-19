@@ -6,6 +6,3 @@
 | ------------ | ------------- | ------------- | ------------- |
 | **operation** | [**MetaUpdateOp**](MetaUpdateOp.md) |  |  |
 | **userMeta** | [**RestUserMeta**](RestUserMeta.md) |  |  |
-
-
-

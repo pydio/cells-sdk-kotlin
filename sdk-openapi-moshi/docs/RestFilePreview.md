@@ -10,6 +10,3 @@
 | **key** | **kotlin.String** |  |  [optional] |
 | **processing** | **kotlin.Boolean** |  |  [optional] |
 | **url** | **kotlin.String** |  |  [optional] |
-
-
-

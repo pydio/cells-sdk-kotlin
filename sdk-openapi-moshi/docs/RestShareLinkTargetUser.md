@@ -6,6 +6,3 @@
 | ------------ | ------------- | ------------- | ------------- |
 | **display** | **kotlin.String** |  |  [optional] |
 | **downloadCount** | **kotlin.Int** |  |  [optional] |
-
-
-

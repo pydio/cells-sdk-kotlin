@@ -13,6 +13,3 @@
     * `WRITE` (value: `"WRITE"`)
 
     * `EDIT_RULES` (value: `"EDIT_RULES"`)
-
-
-

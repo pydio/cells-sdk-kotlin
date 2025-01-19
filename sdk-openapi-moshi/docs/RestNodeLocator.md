@@ -6,6 +6,3 @@
 | ------------ | ------------- | ------------- | ------------- |
 | **path** | **kotlin.String** |  |  [optional] |
 | **uuid** | **kotlin.String** |  |  [optional] |
-
-
-

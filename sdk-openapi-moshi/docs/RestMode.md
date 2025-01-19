@@ -11,6 +11,3 @@
     * `NodeWriteOnly` (value: `"NodeWriteOnly"`)
 
     * `LevelReadOnly` (value: `"LevelReadOnly"`)
-
-
-

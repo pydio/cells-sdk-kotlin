@@ -15,6 +15,3 @@
 | **propertySize** | **kotlin.String** |  |  [optional] |
 | **type** | [**TreeNodeType**](TreeNodeType.md) |  |  [optional] |
 | **uuid** | **kotlin.String** |  |  [optional] |
-
-
-

@@ -1,18 +1,27 @@
 @file:Suppress("unused")
+
 package com.pydio.kotlin.openapi.v2.moshi.infrastructure
 
 import java.lang.RuntimeException
 
-open class ClientException(message: kotlin.String? = null, val statusCode: Int = -1, val response: Response? = null) : RuntimeException(message) {
+open class ClientException(
+    message: kotlin.String? = null,
+    val statusCode: Int = -1,
+    val response: Response? = null
+) : RuntimeException(message) {
 
-    companion object {
-        private const val serialVersionUID: Long = 123L
-    }
+  companion object {
+    private const val serialVersionUID: Long = 123L
+  }
 }
 
-open class ServerException(message: kotlin.String? = null, val statusCode: Int = -1, val response: Response? = null) : RuntimeException(message) {
+open class ServerException(
+    message: kotlin.String? = null,
+    val statusCode: Int = -1,
+    val response: Response? = null
+) : RuntimeException(message) {
 
-    companion object {
-        private const val serialVersionUID: Long = 456L
-    }
+  companion object {
+    private const val serialVersionUID: Long = 456L
+  }
 }

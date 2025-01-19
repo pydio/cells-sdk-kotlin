@@ -5,9 +5,7 @@ import com.squareup.moshi.ToJson
 import java.net.URI
 
 class URIAdapter {
-    @ToJson
-    fun toJson(uri: URI): String = uri.toString()
+  @ToJson fun toJson(uri: URI): String = uri.toString()
 
-    @FromJson
-    fun fromJson(s: String): URI = URI.create(s)
+  @FromJson fun fromJson(s: String): URI = URI.create(s)
 }

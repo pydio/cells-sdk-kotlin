@@ -10,6 +10,3 @@
 | **resource** | **kotlin.String** |  |  [optional] |
 | **subject** | **kotlin.String** |  |  [optional] |
 | **id** | **kotlin.String** |  |  [optional] |
-
-
-

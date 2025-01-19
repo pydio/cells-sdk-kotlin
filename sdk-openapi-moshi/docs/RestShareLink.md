@@ -23,6 +23,3 @@
 | **userUuid** | **kotlin.String** |  |  [optional] |
 | **uuid** | **kotlin.String** |  |  [optional] |
 | **viewTemplateName** | **kotlin.String** |  |  [optional] |
-
-
-

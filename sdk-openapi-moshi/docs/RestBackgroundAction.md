@@ -15,6 +15,3 @@
 | **startTime** | **kotlin.Int** |  |  [optional] |
 | **status** | [**JobsTaskStatus**](JobsTaskStatus.md) |  |  [optional] |
 | **statusMessage** | **kotlin.String** |  |  [optional] |
-
-
-

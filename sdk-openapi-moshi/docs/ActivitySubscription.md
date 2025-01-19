@@ -8,6 +8,3 @@
 | **objectId** | **kotlin.String** |  |  [optional] |
 | **objectType** | [**ActivityOwnerType**](ActivityOwnerType.md) |  |  [optional] |
 | **userId** | **kotlin.String** |  |  [optional] |
-
-
-

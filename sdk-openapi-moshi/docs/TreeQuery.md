@@ -22,6 +22,3 @@
 | **paths** | **kotlin.collections.List&lt;kotlin.String&gt;** |  |  [optional] |
 | **type** | [**TreeNodeType**](TreeNodeType.md) |  |  [optional] |
 | **uuIDs** | **kotlin.collections.List&lt;kotlin.String&gt;** |  |  [optional] |
-
-
-

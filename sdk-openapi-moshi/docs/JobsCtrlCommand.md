@@ -9,6 +9,3 @@
 | **ownerId** | **kotlin.String** |  |  [optional] |
 | **runParameters** | **kotlin.collections.Map&lt;kotlin.String, kotlin.String&gt;** |  |  [optional] |
 | **taskId** | **kotlin.String** |  |  [optional] |
-
-
-

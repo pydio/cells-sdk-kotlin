@@ -40,8 +40,8 @@ Retrieve information about an action running in background
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val name : kotlin.String = name_example // kotlin.String | 
-val jobUuid : kotlin.String = jobUuid_example // kotlin.String | 
+val name : kotlin.String = name_example // kotlin.String |
+val jobUuid : kotlin.String = jobUuid_example // kotlin.String |
 try {
     val result : RestBackgroundAction = apiInstance.backgroundActionInfo(name, jobUuid)
     println(result)
@@ -89,7 +89,7 @@ Update/delete user meta in batch. Passed UserMetas must contain a NodeUuid
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val body : RestBatchUpdateMetaList =  // RestBatchUpdateMetaList | 
+val body : RestBatchUpdateMetaList =  // RestBatchUpdateMetaList |
 try {
     val result : RestBatchUpdateMetaList = apiInstance.batchUpdateMeta(body)
     println(result)
@@ -136,9 +136,9 @@ Send control commands to a background job
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val name : kotlin.String = name_example // kotlin.String | 
-val jobUuid : kotlin.String = jobUuid_example // kotlin.String | 
-val command : JobsCtrlCommand =  // JobsCtrlCommand | 
+val name : kotlin.String = name_example // kotlin.String |
+val jobUuid : kotlin.String = jobUuid_example // kotlin.String |
+val command : JobsCtrlCommand =  // JobsCtrlCommand |
 try {
     val result : RestBackgroundAction = apiInstance.controlBackgroundAction(name, jobUuid, command)
     println(result)
@@ -187,7 +187,7 @@ Create one or many files (empty or hydrated from a TemplateUuid) or folders
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val body : RestCreateRequest =  // RestCreateRequest | 
+val body : RestCreateRequest =  // RestCreateRequest |
 try {
     val result : RestNodeCollection = apiInstance.create(body)
     println(result)
@@ -281,8 +281,8 @@ Create a public link on a given node
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val uuid : kotlin.String = uuid_example // kotlin.String | 
-val publicLinkRequest : RestPublicLinkRequest =  // RestPublicLinkRequest | 
+val uuid : kotlin.String = uuid_example // kotlin.String |
+val publicLinkRequest : RestPublicLinkRequest =  // RestPublicLinkRequest |
 try {
     val result : RestShareLink = apiInstance.createPublicLink(uuid, publicLinkRequest)
     println(result)
@@ -377,7 +377,7 @@ Remove a public link
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val linkUuid : kotlin.String = linkUuid_example // kotlin.String | 
+val linkUuid : kotlin.String = linkUuid_example // kotlin.String |
 try {
     val result : RestPublicLinkDeleteSuccess = apiInstance.deletePublicLink(linkUuid)
     println(result)
@@ -424,8 +424,8 @@ Load a node by its Uuid
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val uuid : kotlin.String = uuid_example // kotlin.String | 
-val path : kotlin.String = path_example // kotlin.String | 
+val uuid : kotlin.String = uuid_example // kotlin.String |
+val path : kotlin.String = path_example // kotlin.String |
 try {
     val result : RestNode = apiInstance.getByUuid(uuid, path)
     println(result)
@@ -473,7 +473,7 @@ Load public link information by Uuid
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val linkUuid : kotlin.String = linkUuid_example // kotlin.String | 
+val linkUuid : kotlin.String = linkUuid_example // kotlin.String |
 try {
     val result : RestShareLink = apiInstance.getPublicLink(linkUuid)
     println(result)
@@ -521,8 +521,8 @@ List values for a given namespace
 
 val apiInstance = NodeServiceApi()
 val namespace : kotlin.String = namespace_example // kotlin.String | List persisted values for this namespace
-val operationOperation : kotlin.String = operationOperation_example // kotlin.String | 
-val operationValues : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | 
+val operationOperation : kotlin.String = operationOperation_example // kotlin.String |
+val operationValues : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> |
 try {
     val result : RestNamespaceValuesResponse = apiInstance.listNamespaceValues(namespace, operationOperation, operationValues)
     println(result)
@@ -615,8 +615,8 @@ List all known versions of a node
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val uuid : kotlin.String = uuid_example // kotlin.String | 
-val path : kotlin.String = path_example // kotlin.String | 
+val uuid : kotlin.String = uuid_example // kotlin.String |
+val path : kotlin.String = path_example // kotlin.String |
 try {
     val result : RestNodeCollection = apiInstance.listVersions(uuid, path)
     println(result)
@@ -664,7 +664,7 @@ Generic request to either list (using Locators) or search (using Query) for node
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val body : RestLookupRequest =  // RestLookupRequest | 
+val body : RestLookupRequest =  // RestLookupRequest |
 try {
     val result : RestNodeCollection = apiInstance.lookup(body)
     println(result)
@@ -711,8 +711,8 @@ PatchNode is used to update a node specific meta. It is used for reserved meta a
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val uuid : kotlin.String = uuid_example // kotlin.String | 
-val nodeUpdates : RestNodeUpdates =  // RestNodeUpdates | 
+val uuid : kotlin.String = uuid_example // kotlin.String |
+val nodeUpdates : RestNodeUpdates =  // RestNodeUpdates |
 try {
     val result : RestNode = apiInstance.patchNode(uuid, nodeUpdates)
     println(result)
@@ -760,9 +760,9 @@ Trigger an action on the tree. Returns a JobInfo describing a background task.
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val name : kotlin.String = name_example // kotlin.String | 
-val parameters : RestActionParameters =  // RestActionParameters | 
-val jobUuid : kotlin.String = jobUuid_example // kotlin.String | 
+val name : kotlin.String = name_example // kotlin.String |
+val parameters : RestActionParameters =  // RestActionParameters |
+val jobUuid : kotlin.String = jobUuid_example // kotlin.String |
 try {
     val result : RestPerformActionResponse = apiInstance.performAction(name, parameters, jobUuid)
     println(result)
@@ -811,7 +811,7 @@ Search a list of meta by node Id or by User id and by namespace
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val body : IdmSearchUserMetaRequest =  // IdmSearchUserMetaRequest | 
+val body : IdmSearchUserMetaRequest =  // IdmSearchUserMetaRequest |
 try {
     val result : RestUserMetaList = apiInstance.searchMeta(body)
     println(result)
@@ -858,7 +858,7 @@ List available templates for hydrating empty files
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val templateType : kotlin.String = templateType_example // kotlin.String | 
+val templateType : kotlin.String = templateType_example // kotlin.String |
 try {
     val result : RestListTemplatesResponse = apiInstance.templates(templateType)
     println(result)
@@ -906,7 +906,7 @@ Add/delete a values for a given namespace
 
 val apiInstance = NodeServiceApi()
 val namespace : kotlin.String = namespace_example // kotlin.String | List persisted values for this namespace
-val operation : RestNamespaceValuesOperation =  // RestNamespaceValuesOperation | 
+val operation : RestNamespaceValuesOperation =  // RestNamespaceValuesOperation |
 try {
     val result : RestNamespaceValuesResponse = apiInstance.updateNamespaceValues(namespace, operation)
     println(result)
@@ -954,8 +954,8 @@ Update public link settings
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val linkUuid : kotlin.String = linkUuid_example // kotlin.String | 
-val publicLinkRequest : RestPublicLinkRequest =  // RestPublicLinkRequest | 
+val linkUuid : kotlin.String = linkUuid_example // kotlin.String |
+val publicLinkRequest : RestPublicLinkRequest =  // RestPublicLinkRequest |
 try {
     val result : RestShareLink = apiInstance.updatePublicLink(linkUuid, publicLinkRequest)
     println(result)
@@ -1003,7 +1003,7 @@ Special API for Bookmarks, will load userMeta and the associated nodes, and retu
 //import com.pydio.kotlin.openapi.v2.moshi.model.*
 
 val apiInstance = NodeServiceApi()
-val all : kotlin.Boolean = true // kotlin.Boolean | 
+val all : kotlin.Boolean = true // kotlin.Boolean |
 try {
     val result : RestNodeCollection = apiInstance.userBookmarks(all)
     println(result)
@@ -1036,4 +1036,3 @@ Configure Bearer:
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
-
