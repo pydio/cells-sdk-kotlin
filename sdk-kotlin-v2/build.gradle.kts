@@ -31,8 +31,8 @@ dependencies {
     implementation(awssdk.services.s3)
 
     testImplementation(libs.kotlintest.junit5)
-    implementation(platform(libs.log4j.bom))
-    implementation(libs.log4j.impl)
+//    implementation(platform(libs.log4j.bom))
+//    implementation(libs.log4j.impl)
 }
 
 tasks.withType<KotlinCompile> {

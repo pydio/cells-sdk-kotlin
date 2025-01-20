@@ -1,19 +1,48 @@
 
 [versions]
 
-kotlin-version = "1.9.25"
+kotlin-version = "1.9.24"
 gradle-version = "8.6.1"
 
 ## SDK OpenAPI
 okhttp-version = "4.12.0"
 moshi-version = "1.15.2"
 
+composeBom = "2023.09.01"
+activityCompose = "1.8.2"
+
+coreKtx = "1.15.0"
+lifecycleRuntimeKtx = "2.8.7"
+
 ## Tests
+junit = "4.13.2"
 kotlintest-junit5-version = "3.4.2"
 log4j-bom-version = "2.24.3"
-
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
 
 [libraries]
+
+## Android
+
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+
 
 ## Base libraries
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin-version" }
@@ -32,6 +61,7 @@ log4j-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl" }
 
 [plugins]
 
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-version" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 android-application = { id = "com.android.application", version.ref = "gradle-version" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-version" }
+

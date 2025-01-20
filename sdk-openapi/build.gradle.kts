@@ -52,9 +52,9 @@ dependencies {
 
     implementation(awssdk.services.s3)
 
-    implementation(platform(libs.log4j.bom))
-    implementation(libs.log4j.impl)
-
+//    implementation(platform(libs.log4j.bom))
+//    implementation(libs.log4j.impl)
+//
     testImplementation(libs.kotlintest.junit5)
 }
 

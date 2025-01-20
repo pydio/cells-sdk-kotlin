@@ -6,6 +6,8 @@ build/
 local.properties
 cells-sdk-kotlin.iml
 
+app/build/
+
 sdk-kotlin-v2/bin/
 sdk-kotlin-v2/build/
 

@@ -13,6 +13,7 @@ rootProject.name = "cells-sdk-kotlin"
 
 include(":sdk-openapi")
 include(":sdk-kotlin-v2")
+include(":app")
 
 dependencyResolutionManagement {
     repositories {
