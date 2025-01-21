@@ -5,9 +5,7 @@ import com.squareup.moshi.ToJson
 import java.util.UUID
 
 class UUIDAdapter {
-    @ToJson
-    fun toJson(uuid: UUID) = uuid.toString()
+  @ToJson fun toJson(uuid: UUID): String = uuid.toString()
 
-    @FromJson
-    fun fromJson(s: String): UUID = UUID.fromString(s)
+  @FromJson fun fromJson(s: String): UUID = UUID.fromString(s)
 }

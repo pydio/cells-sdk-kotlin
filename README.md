@@ -2,12 +2,20 @@
 
 [Kotlin](https://kotlinlang.org/) SDK for communicating with a Pydio Cells Server.
 
+This is the playground to build next generation of the Cells Android app based on the **API v1**.
 
-It provides:
+> WARNING: If you are rather looking for the SDK for the Cells API **v2**, e.g. for Wire Cells
+> integrations,
+> rather checkout the [v5-dev branch](https://github.com/pydio/cells-sdk-kotlin/tree/v5-dev)
 
-- an automatically generated API client using [go-swagger](https://github.com/go-swagger/go-swagger)
-- [TODO] a transport layer that handles authentication and wraps AWS SDK for file transfers
-- [TODO] a bunch of basic examples that use this SDK to perform simple actions on a running Cells server instance
+This repository mainly contains:
+
+- an automatically generated API client
+  using  [Open Api Generator](https://openapi-generator.tech/docs/generators/kotlin/), using default
+  recommended options
+- a transport layer that handles authentication and wraps AWS SDK for file transfers
+- a minimalistic app that use this SDK to perform simple actions on a running Cells
+  server instance [WIP we slowly migrate old PoC]
 
 ## License
 
