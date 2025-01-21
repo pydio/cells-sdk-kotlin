@@ -1,6 +1,5 @@
 package com.pydio.kotlin.sdk.api
 
-import io.ktor.http.URLParserException
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
@@ -8,7 +7,6 @@ import okhttp3.Request
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLHandshakeException
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
@@ -20,7 +18,6 @@ class ServerConnection private constructor(
 
     companion object {
 
-        @Throws(URLParserException::class)
         fun fromAddress(urlString: String, skipVerify: Boolean = false): ServerConnection {
             val httpUrl = urlString.toHttpUrlOrNull()
             check(httpUrl != null)
@@ -70,7 +67,6 @@ class ServerConnection private constructor(
         }
     }
 
-    @Throws(URLParserException::class, SSLHandshakeException::class)
     fun ping() {
         val request = Request.Builder().url(url).build()
         val response = client.newCall(request).execute()
@@ -88,8 +84,7 @@ class ServerConnection private constructor(
         } else {
             "${url.scheme}://${url.host}${url.encodedPath}"
         }
-    
-    @Throws(URLParserException::class)
+
     fun withPath(path: String): ServerConnection {
         var newUrl = url.newBuilder().encodedPath(path).build() // this does a clone under the hood
         return ServerConnection(newUrl, skipVerify = skipVerify, client)

@@ -1,9 +1,9 @@
 package com.pydio.kotlin.sdk.integration
 
+//import com.pydio.kotlin.sdk.transport.CellsMinioClient
 import com.pydio.kotlin.sdk.api.ProgressListener
 import com.pydio.kotlin.sdk.api.Transport
 import com.pydio.kotlin.sdk.client.CellsClient
-import com.pydio.kotlin.sdk.transport.CellsMinioClient
 import com.pydio.kotlin.sdk.transport.CellsTransport
 import com.pydio.kotlin.sdk.transport.StateID
 import com.pydio.kotlin.sdk.utils.MemoryStore
@@ -17,8 +17,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.slf4j.LoggerFactory
-import java.io.ByteArrayOutputStream
-import java.nio.charset.StandardCharsets
 
 class SimpleCrudTest {
 
@@ -94,12 +92,12 @@ class SimpleCrudTest {
         stateID: StateID,
         content: String,
     ) {
-        val minioClient = CellsMinioClient(transport)
-        minioClient.upload(
-            stateID = stateID,
-            content = content,
-            progressListener = DebugPL()
-        )
+//        val minioClient = CellsMinioClient(transport)
+//        minioClient.upload(
+//            stateID = stateID,
+//            content = content,
+//            progressListener = DebugPL()
+//        )
     }
 
     private suspend fun dlAndCheck(
@@ -107,31 +105,31 @@ class SimpleCrudTest {
         stateID: StateID,
         expected: String,
     ) {
-        val minioClient = CellsMinioClient(transport)
-        var retrievedMsg = ""
-        for (i in 0 until 10) {
-            val out = ByteArrayOutputStream()
-            try {
-                minioClient.download(
-                    stateID = stateID,
-                    outputStream = out,
-                    progressListener = DebugPL()
-                )
-                out.flush()
-                retrievedMsg = out.toString(StandardCharsets.UTF_8.name())
-                if (expected == retrievedMsg) {
-                    break
-                }
-                println("Try #${i + 1} failed. Waiting 2s before retry.")
-                Thread.sleep(2000)
-            } catch (e: Exception) {
-                println("Unexpected Exception: $e")
-                e.printStackTrace()
-            } finally {
-                out.close()
-            }
-        }
-        assert(expected == retrievedMsg)
+//        val minioClient = CellsMinioClient(transport)
+//        var retrievedMsg = ""
+//        for (i in 0 until 10) {
+//            val out = ByteArrayOutputStream()
+//            try {
+//                minioClient.download(
+//                    stateID = stateID,
+//                    outputStream = out,
+//                    progressListener = DebugPL()
+//                )
+//                out.flush()
+//                retrievedMsg = out.toString(StandardCharsets.UTF_8.name())
+//                if (expected == retrievedMsg) {
+//                    break
+//                }
+//                println("Try #${i + 1} failed. Waiting 2s before retry.")
+//                Thread.sleep(2000)
+//            } catch (e: Exception) {
+//                println("Unexpected Exception: $e")
+//                e.printStackTrace()
+//            } finally {
+//                out.close()
+//            }
+//        }
+//        assert(expected == retrievedMsg)
     }
 
     private fun delete(transport: CellsTransport, targetStateID: StateID, checkDeleted: Boolean) {

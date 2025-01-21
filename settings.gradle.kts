@@ -12,7 +12,7 @@ plugins {
 rootProject.name = "cells-sdk-kotlin"
 
 include(":sdk-openapi")
-// include ':sdk-kotlin'
+include(":sdk-kotlin")
 // include(":app")
 
 dependencyResolutionManagement {

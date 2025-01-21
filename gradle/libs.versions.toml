@@ -23,6 +23,8 @@ activityCompose = "1.8.2"
 
 kotlintest-junit5-version = "3.4.2"
 
+log4j-bom-version = "2.20.0"
+
 [libraries]
 ## Base libraries
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle-version" }
@@ -50,7 +52,7 @@ moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "mosh
 gson = { module = "com.google.code.gson:gson", version.ref = "gson-version" }
 urlencoder = { module = "net.thauvin.erik.urlencoder:urlencoder-lib", version.ref = "urlencoder-version" }
 
-aws-sdk-s3 = { module = "com.amazonaws:aws-android-sdk-s3", version.ref = "aws-sdk-s3-version" }
+#aws-sdk-s3 = { module = "com.amazonaws:aws-android-sdk-s3", version.ref = "aws-sdk-s3-version" }
 
 # Tests
 #kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-test-version" }
@@ -58,6 +60,10 @@ junit = { module = "junit:junit", version.ref = "junit-version" }
 # Coroutine and suspend calls in test
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines-test-version" }
 kotlintest-junit5 = { module = "io.kotlintest:kotlintest-runner-junit5", version.ref = "kotlintest-junit5-version" }
+
+log4j-bom = { module = "org.apache.logging.log4j:log4j-bom", version.ref = "log4j-bom-version" }
+log4j-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl" }
+
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }

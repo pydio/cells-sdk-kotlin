@@ -14,16 +14,12 @@ import com.pydio.kotlin.sdk.api.SDKException
 import com.pydio.kotlin.sdk.api.ServerURL
 import com.pydio.kotlin.sdk.utils.IoHelpers
 import com.pydio.kotlin.sdk.utils.Log
-import io.minio.MinioClient
-import io.minio.PutObjectArgs
-import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.net.MalformedURLException
 import java.net.URI
 import java.net.URL
-import java.nio.charset.StandardCharsets
 
 // import aws.sdk.kotlin.services.s3.S3Client as AwsS3Client
 
@@ -89,15 +85,15 @@ class CellsS3Client(private val transport: CellsTransport) {
 //        return s3Client().generatePresignedUrl(request)
     }
 
-    fun getMinioClient(transport: CellsTransport): MinioClient {
-
-        val minioClient = MinioClient.builder().httpClient(transport.authenticatedClient().build())
-            .endpoint(transport.server.url())
-            // .credentials("root", "password")
-            .build()
-        return minioClient
-
-    }
+//    fun getMinioClient(transport: CellsTransport): MinioClient {
+//
+//        val minioClient = MinioClient.builder().httpClient(transport.authenticatedClient().build())
+//            .endpoint(transport.server.url())
+//            // .credentials("root", "password")
+//            .build()
+//        return minioClient
+//
+//    }
 
 //    private fun getS3Client(transport: CellsTransport, accountID: StateID): AmazonS3Client {
 //        SignerFactory.registerSigner(CellsSigner.CELLS_SIGNER_ID, CellsSigner::class.java)
@@ -223,26 +219,26 @@ class CellsS3Client(private val transport: CellsTransport) {
 //        }
     }
 
-    suspend fun upload3(
-        stateID: StateID,
-        content: String,
-        mime: String = S3Names.S3_CONTENT_TYPE_OCTET_STREAM,
-        progressListener: ProgressListener?
-    ) {
-        println("#### About to upload3")
-
-        val minioClient = getMinioClient(transport)
-        val path = stateID.path?.substring(1) ?: ""
-        val args = PutObjectArgs.builder().bucket(DEFAULT_BUCKET_NAME).`object`(path)
-            .stream(
-                ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8)),
-                content.length.toLong(),
-                -1L
-            )
-            .contentType(mime)
-            .build()
-        minioClient.putObject(args)
-    }
+//    suspend fun upload3(
+//        stateID: StateID,
+//        content: String,
+//        mime: String = S3Names.S3_CONTENT_TYPE_OCTET_STREAM,
+//        progressListener: ProgressListener?
+//    ) {
+//        println("#### About to upload3")
+//
+//        val minioClient = getMinioClient(transport)
+//        val path = stateID.path?.substring(1) ?: ""
+//        val args = PutObjectArgs.builder().bucket(DEFAULT_BUCKET_NAME).`object`(path)
+//            .stream(
+//                ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8)),
+//                content.length.toLong(),
+//                -1L
+//            )
+//            .contentType(mime)
+//            .build()
+//        minioClient.putObject(args)
+//    }
 
     suspend fun download(
         stateID: StateID,

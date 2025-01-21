@@ -1,10 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("maven-publish")
     kotlin("jvm")
     application
-    id("maven-publish")
-    id("com.diffplug.spotless") version "7.0.2"
 }
 
 group = "com.pydio.kotlin"
@@ -15,47 +14,31 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-buildscript {
-    val spotlessVersion = "7.0.2"
-    repositories {
-        maven("https://repo1.maven.org/maven2")
-    }
-
-    dependencies {
-        classpath("com.diffplug.spotless:spotless-plugin-gradle:$spotlessVersion")
-    }
-}
-
-configure<com.diffplug.gradle.spotless.SpotlessExtension> {
-    kotlin {
-        target("**/*.kt")
-        ktfmt()
-    }
-    format("misc") {
-        target("**/.gitignore", "**/*.md", "**/*.gradle")
-        trimTrailingWhitespace()
-        leadingTabsToSpaces(2)
-        endWithNewline()
-    }
-}
-
 tasks.test {
     useJUnitPlatform()
 }
 
 dependencies {
+    implementation(project(":sdk-openapi"))
+
     implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.kotlin.reflect)
+
     implementation(libs.okhttp)
     implementation(libs.moshi.kotlin)
     implementation(libs.moshi.adapters)
 
     implementation(awssdk.services.s3)
 
-    implementation(platform(libs.log4j.bom))
-    implementation(libs.log4j.impl)
+    // Additional Libs for the SDK-kotlin
+    implementation(libs.gson)
+    implementation(libs.urlencoder)
 
     testImplementation(libs.kotlintest.junit5)
+    implementation(platform(libs.log4j.bom))
+    implementation(libs.log4j.impl)
+    testImplementation(libs.junit)
+
 }
 
 tasks.withType<KotlinCompile> {
