@@ -66,19 +66,6 @@ fun pingServer(): Int {
     }
 }
 
-// private fun getS3Client(): AmazonS3 {
-//    val awsCredentials = BasicAWSCredentials(com.pydio.kotlin.android.testawssdk.PAT,
-// DEFAULT_GATEWAY_SECRET)
-//    val conf = ClientConfiguration().withUserAgent(com.pydio.kotlin.android.testawssdk.USER_AGENT)
-//    val s3Client = AmazonS3Client(
-//        awsCredentials,
-//        Region.getRegion(DEFAULT_S3_REGION_NAME),
-//        conf
-//    )
-//    s3Client.endpoint = com.pydio.kotlin.android.testawssdk.SERVER_URL
-//    return s3Client
-// }
-
 suspend fun putS3Object(
     objectKey: String,
     //     objectPath: String,
@@ -103,20 +90,6 @@ suspend fun putS3Object(
             val response = s3.putObject(request)
             println("Tag information is ${response.eTag}")
         }
-
-//    S3Client {
-//        region = DEFAULT_S3_REGION_NAME
-//        credentialsProvider = StaticCredentialsProvider(creds)
-//        endpointUrl = Url.parse(SERVER_URL)
-//    }
-//        .use { s3 ->
-//            val response = s3.getObject(GetObjectRequest{}){
-//                println("Got a response")
-//            }
-//
-//            s3.
-//        }
-
 }
 
 private class PatCredentials(
