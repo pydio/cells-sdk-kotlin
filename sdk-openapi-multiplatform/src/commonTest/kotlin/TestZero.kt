@@ -1,9 +1,7 @@
 import com.pydio.kotlin.openapi.kmp.api.NodeServiceApi
 import com.pydio.kotlin.openapi.kmp.model.RestCreateRequest
 import com.pydio.kotlin.openapi.kmp.model.RestIncomingNode
-import com.pydio.kotlin.openapi.kmp.model.RestLookupRequest
 import com.pydio.kotlin.openapi.kmp.model.RestNodeLocator
-import com.pydio.kotlin.openapi.kmp.model.RestNodeLocators
 import com.pydio.kotlin.openapi.kmp.model.TreeNodeType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -72,5 +70,4 @@ class TestZero {
             println("Got an exception " + e.message)
         }
     }
-
 }

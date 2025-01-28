@@ -6,18 +6,15 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.Response
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
-import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 const val SERVER_URL = "https://localhost:8080"
-private const val PAT =
-    "tZCgaw5AWZQkoPHrMXtUIHTQ_kqMjaKg2j-8jW3r6sU.HtwOVlRQikfSSeQ5SIdU7SF7BpzL8dxoWNZ-pH_GSjE"
+private const val PAT = "change me"
 
 private const val SKIP_SSL_VERIFICATION = true
 
@@ -26,27 +23,11 @@ private const val AUTH_HEADER = "Authorization"
 private const val USER_AGENT_HEADER = "User-Agent"
 private const val DEFAULT_TOKEN_TYPE = "Bearer"
 
-const val DEFAULT_GATEWAY_SECRET = "gatewaysecret"
-const val DEFAULT_S3_REGION_NAME = "us-east-1"
-const val DEFAULT_BUCKET_NAME = "io"
+// const val DEFAULT_GATEWAY_SECRET = "gatewaysecret"
+// const val DEFAULT_S3_REGION_NAME = "us-east-1"
+// const val DEFAULT_BUCKET_NAME = "io"
 
-private var currClient: OkHttpClient? = null
-
-//fun getTestHttpClient(): OkHttpClient {
-//    if (currClient != null) {
-//        return currClient!!
-//    }
-//    var builder = if (SKIP_SSL_VERIFICATION) {
-//        unsafeClientBuilder()
-//    } else {
-//        OkHttpClient.Builder()
-//    }
-//    builder = builder.addInterceptor(DummyPatInterceptor(USER_AGENT) { PAT })
-//    currClient = builder.build()
-//    return currClient!!
-//}
-
-fun getMyHttpClient() : HttpClient {
+fun getMyHttpClient(): HttpClient {
     return HttpClient(OkHttp) {
         install(ContentNegotiation) {
             json(jsonInstance)
@@ -59,27 +40,19 @@ fun getMyHttpClient() : HttpClient {
                 .build()
         }
     }
-
 }
 
+@OptIn(ExperimentalSerializationApi::class)
+private val jsonInstance = Json {
+    ignoreUnknownKeys = true
+    isLenient = true
+    encodeDefaults = true
+    coerceInputValues = false
+    explicitNulls = false
+}
 
-//// WARNING: dev only. Skip TLS verification during development and test against a local Pydio Server
-//val unsecureHttpClient = HttpClient(OkHttp) {
-//    install(ContentNegotiation) {
-//        json(jsonInstance)
-//    }
-//    engine {
-//        preconfigured = OkHttpClient.Builder()
-//            .sslSocketFactory(getSslContext().socketFactory, trustAllCerts)
-//            .hostnameVerifier { _, _ -> true }
-//            .addInterceptor(DummyPatInterceptor(USER_AGENT) { PAT })
-//            .build()
-//    }
-//}
-//
-
+// SSL context that uses the unsecured trust manager
 private var currContext: SSLContext? = null
-
 
 fun getSslContext(): SSLContext {
     if (currContext != null) {
@@ -91,13 +64,6 @@ fun getSslContext(): SSLContext {
     }
     return currContext!!
 }
-
-//// SSL context that uses the unsecured trust manager
-//private val unsafeSslContext by lazy {
-//    SSLContext.getInstance("TLS").apply {
-//        init(null, arrayOf<TrustManager>(trustAllCerts), SecureRandom())
-//    }
-//}
 
 // Trust manager that does not validate any certificates
 private val trustAllCerts = UnsecureTrustManager()
@@ -112,38 +78,6 @@ private class UnsecureTrustManager : X509TrustManager {
     override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
 }
 
-
-@OptIn(ExperimentalSerializationApi::class)
-private val jsonInstance = Json {
-    ignoreUnknownKeys = true
-    isLenient = true
-    encodeDefaults = true
-    coerceInputValues = false
-    explicitNulls = false
-}
-
-//private val basicHttpClient = HttpClient(OkHttp) {
-//    install(ContentNegotiation) {
-//        json(jsonInstance)
-//    }
-//    engine {
-//        addInterceptor(interceptor = DummyPatInterceptor(USER_AGENT) { PAT })
-//    }
-//}
-
-
-//fun pingServer(): Int {
-//    try {
-//        val request = Request.Builder.build()
-//        val response = Call.execute()
-//        return Response.code
-//    } catch (e: Exception) {
-//        print("unexpected error while pinging server at ${SERVER_URL}: ${Throwable.message}")
-//        return 503
-//    }
-//}
-
-
 private class DummyPatInterceptor(
     private val userAgent: String,
     private val getToken: () -> String,
@@ -152,45 +86,9 @@ private class DummyPatInterceptor(
         val builder = chain.request().newBuilder()
             .addHeader(AUTH_HEADER, "$DEFAULT_TOKEN_TYPE ${getToken()}")
             .addHeader("User-Agent", userAgent)
-
-        // chain.request().newBuilder().addHeader(AUTH_HEADER, "$DEFAULT_TOKEN_TYPE ${getToken()}")
         return chain.proceed(builder.build())
     }
 }
-
-//private fun unsafeClientBuilder(): OkHttpClient.Builder {
-//    try {
-//        // Create a trust manager that does not validate certificate chains
-//        val trustAllCerts =
-//            arrayOf<TrustManager>(
-//                object : javax.net.ssl.X509TrustManager {
-//                    override fun checkClientTrusted(
-//                        chain: Array<java.security.cert.X509Certificate>,
-//                        authType: String
-//                    ) {
-//                    }
-//
-//                    override fun checkServerTrusted(
-//                        chain: Array<java.security.cert.X509Certificate>,
-//                        authType: String
-//                    ) {
-//                    }
-//
-//                    override fun getAcceptedIssuers(): Array<X509Certificate> =
-//                        arrayOf()
-//                })
-//
-//        // Install the all-trusting trust manager
-//        val sslContext = SSLContext.getInstance("SSL")
-//        sslContext.init(null, trustAllCerts, SecureRandom())
-//        val sslSocketFactory = sslContext.socketFactory
-//
-//        // Create an OkHttpClient and configure it to ignore certificate errors
-//        return OkHttpClient.Builder().hostnameVerifier(HostnameVerifier { _, _ -> true })
-//    } catch (e: Exception) {
-//        throw RuntimeException(e)
-//    }
-//}
 
 fun unique(length: Int = 4): String {
     return System.currentTimeMillis().toString().takeLast(length)
