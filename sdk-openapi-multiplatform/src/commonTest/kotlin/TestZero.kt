@@ -1,12 +1,17 @@
 import com.pydio.kotlin.openapi.kmp.api.NodeServiceApi
 import com.pydio.kotlin.openapi.kmp.model.RestCreateRequest
 import com.pydio.kotlin.openapi.kmp.model.RestIncomingNode
+import com.pydio.kotlin.openapi.kmp.model.RestLookupRequest
 import com.pydio.kotlin.openapi.kmp.model.RestNodeLocator
+import com.pydio.kotlin.openapi.kmp.model.RestNodeLocators
 import com.pydio.kotlin.openapi.kmp.model.TreeNodeType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class TestZero {
 
@@ -16,7 +21,7 @@ class TestZero {
     @Test
     fun testIt() = runTest(dispatcher) {
 
-        val name = "test-kotlin-moshi-${unique()}.txt"
+        val name = "test-kotlin-kmm-${unique()}.txt"
         val newPath = "common-files/$name"
         val apiInstance = NodeServiceApi("${SERVER_URL}/a", getMyHttpClient())
 
@@ -32,28 +37,34 @@ class TestZero {
                 recursive = false,
             )
             val r1 = apiInstance.create(q1)
-//            r1.nodes.size shouldBe 1
-//
-//            val q2 = RestLookupRequest(
-//                locators = RestNodeLocators(listOf(RestNodeLocator(path = newPath))),
-//            )
-//            val r2 = apiInstance.lookup(q2)
-//            r2.nodes.size shouldBeGreaterThanOrEqual 1
-//            var found = false
-//            var foundUuid: String? = null
-//            r2.nodes.forEach {
-//                if (it.path == newPath) {
-//                    if (it.uuid == r1.nodes[0].uuid) {
-//                        found = true
-//                        foundUuid = it.uuid
-//                    }
-//                }
-//            }
-//            found shouldBe true
-//            foundUuid shouldNotBe null
-//
-//            val r3 = apiInstance.getByUuid(uuid = foundUuid!!)
-//            r3 shouldNotBe null
+            assertTrue(r1.success, "create node for $newPath failed, status: ${r1.response.status}")
+            assertEquals(r1.body().nodes.size, 1)
+            val nodeUuid = r1.body().nodes.get(0).uuid
+            assertNotNull(nodeUuid)
+
+            val q2 = RestLookupRequest(
+                locators = RestNodeLocators(listOf(RestNodeLocator(path = newPath))),
+            )
+            val r2 = apiInstance.lookup(q2)
+            assertTrue(r2.success, "lookup node at $newPath failed, status: ${r2.response.status}")
+            assertTrue(r2.body().nodes.isNotEmpty())
+
+            var found = false
+            var foundUuid: String? = null
+            r2.body().nodes.forEach {
+                if (it.path == newPath) {
+                    if (it.uuid == nodeUuid) {
+                        found = true
+                        foundUuid = it.uuid
+                    }
+                }
+            }
+            assertTrue(found)
+
+            val r3 = apiInstance.getByUuid(uuid = foundUuid!!)
+            assertTrue(r3.success, "lookup node with uuid $foundUuid failed, status: ${r3.response.status}")
+            assertNotNull(r3.body())
+
             //
             //
             //                val r4 = apiInstance.performAction(
@@ -66,8 +77,8 @@ class TestZero {
 
 //                 putS3Object("common-files/test-simple-put-${unique()}.txt")
         } catch (e: Exception) {
-            // e shouldBe null
-            println("Got an exception " + e.message)
+            e.printStackTrace()
+            assertTrue(false)
         }
     }
 }
