@@ -1,14 +1,17 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-
 plugins {
-    kotlin("multiplatform") version "1.9.23" // kotlin_version
-    kotlin("plugin.serialization") version "1.9.23" // kotlin_version
+    kotlin("multiplatform") version "1.9.23"
+    kotlin("plugin.serialization") version "1.9.23"
+    id("maven-publish")
 }
 
-group = "com.pydio.kotlin"
-version = "0.1.1-dev"
+allprojects {
+    version = "0.1.1-dev"
+    group = "com.pydio.kotlin"
+}
+
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -45,6 +48,46 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation(kotlin("test-junit"))
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        // see https://docs.gradle.org/current/userguide/publishing_maven.html
+        create<MavenPublication>("sdk-openapi-multiplatform") {
+            pom {
+                name = "com.pydio.kotlin.openapi.kmp"
+                description = "Openapi generated Cells v2 SDK for Kotlin Multi Platform"
+                url = "https://pydio.com"
+//                properties = mapOf(
+//                    "myProp" to "value",
+//                    "prop.with.dots" to "anotherValue"
+//                )
+                licenses {
+                    license {
+                        name = "The Apache License, Version 2.0"
+                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "cdujeu"
+                        name = "Charles du Jeu"
+                        email = "charles@pydio.com"
+                    }
+                    developer {
+                        id = "bsinou"
+                        name = "Bruno Sinou"
+                        email = "bruno.sinou@wire.com"
+                    }
+                }
+                scm {
+                    connection = "scm:git:git://github.com/pydio/cells-sdk-kotlin.git"
+                    developerConnection = "scm:git:ssh://github.com/pydio/cells-sdk-kotlin.git"
+                    url = "https://pydio.com/"
+                }
             }
         }
     }
